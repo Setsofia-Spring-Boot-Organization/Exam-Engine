@@ -1,4 +1,4 @@
-package com.examengine.Exam_engine
+package com.examengine.exam_engine
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
