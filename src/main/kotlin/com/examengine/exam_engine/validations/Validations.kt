@@ -12,11 +12,15 @@ class Validations(
 ) : ValidationsInterface {
 
     override fun isValidRegistrationField(accountRegistrationDTO: AccountRegistrationDTO): Boolean {
-        return (accountRegistrationDTO.getEmail().isEmpty() || accountRegistrationDTO.getPassword().isEmpty())
+        return (accountRegistrationDTO.getEmail().isEmpty() || accountRegistrationDTO.getPassword().isEmpty() || accountRegistrationDTO.getUsername().isEmpty())
     }
 
     override fun isValidLoginField(accountLoginDTO: AccountLoginDTO): Boolean {
         return (accountLoginDTO.getEmail().isEmpty() || accountLoginDTO.getPassword().isEmpty())
+    }
+
+    override fun isPasswordInvalid(password: String): Boolean {
+        return (password.length < 8)
     }
 
     override fun userIsExisting(accountRegistrationDTO: AccountRegistrationDTO): Boolean {

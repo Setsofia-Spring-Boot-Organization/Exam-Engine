@@ -7,4 +7,5 @@ interface ValidationsInterface {
     fun isValidRegistrationField(accountRegistrationDTO: AccountRegistrationDTO) : Boolean
     fun isValidLoginField(accountLoginDTO: AccountLoginDTO) : Boolean
     fun userIsExisting(accountRegistrationDTO: AccountRegistrationDTO) : Boolean
+    fun isPasswordInvalid(password: String): Boolean
 }

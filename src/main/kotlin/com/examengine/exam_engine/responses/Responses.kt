@@ -19,7 +19,8 @@ class Responses : ResponseInterface{
         return ResponseEntity.status(200).body(LoginResponseDAO(
             status = loginResponseDAO.getStatus(),
             message = loginResponseDAO.getMessage(),
-            token = loginResponseDAO.getToken()
+            token = loginResponseDAO.getToken(),
+            username = loginResponseDAO.getUsername()
         ))
     }
 }

@@ -1,6 +1,5 @@
 package com.examengine.exam_engine.entities
 
-import com.examengine.exam_engine.enums.UserRoles
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -20,13 +19,18 @@ data class Users (
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private val userId: String,
+    private val username: String,
     private val userEmail: String,
     private val password: String,
-    private val role: UserRoles
+    private val role: String
 ) : UserDetails {
 
     fun getId() : String {
         return this.userId
+    }
+
+    fun getName(): String {
+        return this.username
     }
 
     override fun toString(): String {
@@ -34,7 +38,7 @@ data class Users (
     }
 
     override fun getAuthorities(): Collection<GrantedAuthority> {
-        return listOf(SimpleGrantedAuthority(role.name))
+        return listOf(SimpleGrantedAuthority(role))
     }
 
     override fun getPassword(): String {
@@ -53,14 +57,17 @@ data class Users (
 
         if (userId != other.userId) return false
         if (userEmail != other.userEmail) return false
+        if (username != other.username) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = userId.hashCode()
+        result = 31 * result + username.hashCode()
         result = 31 * result + userEmail.hashCode()
+        result = 31 * result + password.hashCode()
+        result = 31 * result + role.hashCode()
         return result
     }
-
 }

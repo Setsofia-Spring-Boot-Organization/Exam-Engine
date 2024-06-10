@@ -33,6 +33,7 @@ class AuthenticationServiceImpl(
 
     override fun registerAccount(accountRegistrationDTO: AccountRegistrationDTO): ResponseEntity<Any> {
         if (validation.isValidRegistrationField(accountRegistrationDTO)) throw MyExceptions(Reasons.INPUT_FIELDS_MUST_NOT_BE_EMPTY)
+        if (validation.isPasswordInvalid(accountRegistrationDTO.getPassword())) throw MyExceptions(Reasons.INVALID_PASSWORD)
         return createAccount(accountRegistrationDTO)
     }
 
@@ -40,9 +41,10 @@ class AuthenticationServiceImpl(
         if (validation.userIsExisting(accountRegistrationDTO)) throw MyExceptions(Reasons.USER_ALREADY_EXISTS)
         val user = Users(
             userId = UUID.randomUUID().toString(),
+            username = accountRegistrationDTO.getUsername(),
             userEmail = accountRegistrationDTO.getEmail(),
             password = passwordEncoder.encode(accountRegistrationDTO.getPassword()),
-            role = UserRoles.ADMIN
+            role = UserRoles.ADMIN.name
         )
         try {
             userRepository.save(user)
@@ -69,7 +71,7 @@ class AuthenticationServiceImpl(
                 )
 
                 val token = jwtServiceImpl.generateTokens(user.get())
-                return responses.loginResponse(LoginResponseDAO(status = 201, message = "Login successful!", token = token))
+                return responses.loginResponse(LoginResponseDAO(status = 201, message = "Login successful!", username = user.get().getName(), token = token))
             } catch (exception: Exception) {
                 throw exception
             }
