@@ -8,7 +8,7 @@ COPY gradlew /app/gradlew
 COPY build.gradle.kts /app/
 COPY settings.gradle.kts /app/
 
-# Grant execute permissions for the gradlew script
+# Grant execute permissions for the gradlew script (fix)
 RUN chmod +x /app/gradlew
 
 # Download dependencies
@@ -24,7 +24,12 @@ RUN ./gradlew clean build -x test --no-daemon
 FROM openjdk:21-slim
 WORKDIR /app
 
-COPY --from=BUILD /app/build/libs/Exam_engine-0.0.1-SNAPSHOT.jar exam_engine.jar
+# Fix potential caching issue (optional)
+COPY gradlew /app/gradlew
+RUN chmod +x /app/gradlew  # Reset permissions (optional)
+
+# Copy the JAR from the build stage
+COPY --from=BUILD /build/libs/Exam_engine-0.0.1-SNAPSHOT.jar exam_engine.jar
 
 EXPOSE 8081
 ENTRYPOINT ["java", "-jar", "exam_engine.jar"]
