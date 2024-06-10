@@ -17,10 +17,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 @Entity(name = "exam_engine_users")
-@Getter
-@Setter
-@Builder
-@Data
 @EqualsAndHashCode
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -32,6 +28,15 @@ data class Users (
     private val password: String,
     private val role: UserRoles
 ) : UserDetails {
+
+    fun getId() : String {
+        return this.role.name
+    }
+
+    fun getRole() : String {
+        return this.role.name
+    }
+
     override fun toString(): String {
         return "Users(userId='$userId', userEmail='$userEmail')"
     }
