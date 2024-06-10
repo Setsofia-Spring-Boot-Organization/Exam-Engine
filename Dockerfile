@@ -8,6 +8,9 @@ COPY gradlew /app/gradlew
 COPY build.gradle.kts /app/
 COPY settings.gradle.kts /app/
 
+# Grant execute permissions for the gradlew script
+RUN chmod +x /app/gradlew
+
 # Download dependencies
 RUN ./gradlew build --no-daemon --stacktrace || return 0
 
