@@ -11,19 +11,19 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(MyExceptions::class)
     fun handleGlobalException(myException: MyExceptions): ResponseEntity<Any> {
-        val reason: Reasons = myException.getReason()
         val status: HttpStatus
+        val reason: Reasons = myException.getReason()
 
         when (reason) {
             Reasons.INPUT_FIELDS_MUST_NOT_BE_EMPTY,
-            Reasons.USER_ALREADY_EXISTS-> status =
-                HttpStatus.BAD_REQUEST
+            Reasons.USER_ALREADY_EXISTS,
+            Reasons.USER_NOT_FOUND -> status = HttpStatus.BAD_REQUEST
         }
-        val myExceptionPayload = MyExceptionPayload(
-            reason.label,
-            status
-        )
 
+        val myExceptionPayload = MyExceptionPayload(
+            status.value(),
+            reason.label
+        )
         return ResponseEntity(myExceptionPayload, status)
     }
 }

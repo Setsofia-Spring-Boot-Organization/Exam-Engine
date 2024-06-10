@@ -1,7 +1,6 @@
 package com.examengine.exam_engine.dto
 
-
-data class AccountRegistrationDTO(
+class AccountLoginDTO (
     private val email: String,
     private val password: String
 ) {

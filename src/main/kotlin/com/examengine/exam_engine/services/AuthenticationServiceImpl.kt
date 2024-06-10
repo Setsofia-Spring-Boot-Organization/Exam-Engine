@@ -1,6 +1,8 @@
 package com.examengine.exam_engine.services
 
-import com.examengine.exam_engine.dao.SuccessResponseDAO
+import com.examengine.exam_engine.dao.LoginResponseDAO
+import com.examengine.exam_engine.dao.SignupResponseDAO
+import com.examengine.exam_engine.dto.AccountLoginDTO
 import com.examengine.exam_engine.dto.AccountRegistrationDTO
 import com.examengine.exam_engine.entities.Users
 import com.examengine.exam_engine.enums.Reasons
@@ -12,6 +14,9 @@ import com.examengine.exam_engine.responses.Responses
 import com.examengine.exam_engine.validations.Validations
 import lombok.RequiredArgsConstructor
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -20,11 +25,14 @@ import java.util.UUID
 class AuthenticationServiceImpl(
     private val validation: Validations,
     private val userRepository: UserRepository,
-    private val responses: Responses
+    private val responses: Responses,
+    private val authenticationManager: AuthenticationManager,
+    private val jwtServiceImpl: JwtServiceImpl,
+    private val passwordEncoder: PasswordEncoder
 ) : AuthenticationInterface {
 
     override fun registerAccount(accountRegistrationDTO: AccountRegistrationDTO): ResponseEntity<Any> {
-        if (validation.isRegistrationValid(accountRegistrationDTO)) throw MyExceptions(Reasons.INPUT_FIELDS_MUST_NOT_BE_EMPTY)
+        if (validation.isValidRegistrationField(accountRegistrationDTO)) throw MyExceptions(Reasons.INPUT_FIELDS_MUST_NOT_BE_EMPTY)
         return createAccount(accountRegistrationDTO)
     }
 
@@ -33,7 +41,7 @@ class AuthenticationServiceImpl(
         val user = Users(
             userId = UUID.randomUUID().toString(),
             userEmail = accountRegistrationDTO.getEmail(),
-            password = accountRegistrationDTO.getPassword(),
+            password = passwordEncoder.encode(accountRegistrationDTO.getPassword()),
             role = UserRoles.ADMIN
         )
         try {
@@ -41,9 +49,31 @@ class AuthenticationServiceImpl(
         } catch (exception: Exception) {
             throw exception
         }
-        return responses.successResponse(SuccessResponseDAO(
-            status = 201,
-            message = "Account created successfully!"
-        ))
+        return responses.signupResponse(SignupResponseDAO(status = 201, message = "Account created successfully!"))
+    }
+
+    override fun loginUser(accountLoginDTO: AccountLoginDTO): ResponseEntity<Any> {
+        if (validation.isValidLoginField(accountLoginDTO)) throw MyExceptions(Reasons.INPUT_FIELDS_MUST_NOT_BE_EMPTY)
+        return login(accountLoginDTO)
+    }
+
+    private fun login(accountLoginDTO: AccountLoginDTO): ResponseEntity<Any> {
+        val user = userRepository.findByUserEmail(accountLoginDTO.getEmail())
+        if (user.isPresent) {
+            try {
+                authenticationManager.authenticate(
+                    UsernamePasswordAuthenticationToken(
+                        accountLoginDTO.getEmail(),
+                        accountLoginDTO.getPassword()
+                    )
+                )
+
+                val token = jwtServiceImpl.generateTokens(user.get())
+                return responses.loginResponse(LoginResponseDAO(status = 201, message = "Login successful!", token = token))
+            } catch (exception: Exception) {
+                throw exception
+            }
+        }
+        throw MyExceptions(Reasons.USER_NOT_FOUND)
     }
 }

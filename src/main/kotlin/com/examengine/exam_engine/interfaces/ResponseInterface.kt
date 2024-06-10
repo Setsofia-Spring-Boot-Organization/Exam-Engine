@@ -1,8 +1,10 @@
 package com.examengine.exam_engine.interfaces
 
-import com.examengine.exam_engine.dao.SuccessResponseDAO
+import com.examengine.exam_engine.dao.LoginResponseDAO
+import com.examengine.exam_engine.dao.SignupResponseDAO
 import org.springframework.http.ResponseEntity
 
 interface ResponseInterface {
-    fun successResponse(successResponseDAO: SuccessResponseDAO) : ResponseEntity<Any>
+    fun signupResponse(signupResponseDAO: SignupResponseDAO) : ResponseEntity<Any>
+    fun loginResponse(loginResponseDAO: LoginResponseDAO) : ResponseEntity<Any>
 }

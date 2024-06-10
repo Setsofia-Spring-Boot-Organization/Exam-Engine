@@ -1,6 +1,5 @@
 package com.examengine.exam_engine.services
 
-import com.examengine.exam_engine.enums.UserRoles
 import com.examengine.exam_engine.interfaces.JwtInterface
 import com.examengine.exam_engine.repositories.UserRepository
 import io.jsonwebtoken.Claims
@@ -8,9 +7,7 @@ import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
-import lombok.Getter
 import lombok.RequiredArgsConstructor
-import lombok.Setter
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
@@ -20,29 +17,20 @@ import javax.crypto.SecretKey
 
 @Service
 @RequiredArgsConstructor
-class JwtServiceImpl : JwtInterface {
-    private val userRepository: UserRepository? = null
+class JwtServiceImpl(
+    private val userRepository: UserRepository,
+    @Value("\${auth-key}") private val signInKey: String
+) : JwtInterface {
 
-    @Value("\${auth-key}")
-    private val SIGN_IN_KEY: String? = null
+
     override fun getSignIntKey(): SecretKey {
-        val bytes: ByteArray = Decoders.BASE64.decode(SIGN_IN_KEY)
+        val bytes: ByteArray = Decoders.BASE64.decode(signInKey)
         return Keys.hmacShaKeyFor(bytes)
     }
 
     // get the user id
-    @Getter
-    @Setter
-    private var adminID: String? = null
-    @Getter
-    @Setter
-    private var companyName: String? = null
     fun userId(email: String): String {
-        val isUser = userRepository!!.findByUserEmail(email).orElseThrow()
-        if (isUser.getRole() == UserRoles.ADMIN.toString()) {
-            adminID = isUser.getId()
-            companyName = isUser.username
-        }
+        val isUser = userRepository.findByUserEmail(email).orElseThrow()
         return isUser.getId()
     }
 
@@ -78,28 +66,12 @@ class JwtServiceImpl : JwtInterface {
         }
     }
 
-    // remember me
-    fun generateTokenRememberMe(claims: Map<String?, Any?>?, userDetails: UserDetails): String {
-        try {
-            return Jwts.builder()
-                .claims(claims)
-                .subject(userDetails.username)
-                .id(userId(userDetails.username))
-                .issuedAt(Date(System.currentTimeMillis()))
-                .expiration(Date(System.currentTimeMillis() + 60000)) // 20 days when remember me is ticked
-                .signWith(getSignIntKey())
-                .compact()
-        } catch (jwtException: JwtException) {
-            throw JwtException(jwtException.message)
-        }
-    }
-
     override fun extractUsername(token: String): String {
         return extractClaimsFromToken<String>(token, Claims::getSubject)
     }
 
     override fun generateTokens(claims: Map<String, Any>, userDetails: UserDetails): String {
-        return generateTokenRememberMe(HashMap(), userDetails)
+        return generateToken(HashMap(), userDetails)
     }
 
     override fun generateTokens(userDetails: UserDetails): String {

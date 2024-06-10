@@ -6,12 +6,8 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import lombok.AllArgsConstructor
-import lombok.Builder
-import lombok.Data
 import lombok.EqualsAndHashCode
-import lombok.Getter
 import lombok.RequiredArgsConstructor
-import lombok.Setter
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -30,11 +26,7 @@ data class Users (
 ) : UserDetails {
 
     fun getId() : String {
-        return this.role.name
-    }
-
-    fun getRole() : String {
-        return this.role.name
+        return this.userId
     }
 
     override fun toString(): String {

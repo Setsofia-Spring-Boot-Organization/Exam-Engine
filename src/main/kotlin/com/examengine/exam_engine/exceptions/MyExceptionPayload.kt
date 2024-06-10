@@ -1,16 +1,14 @@
 package com.examengine.exam_engine.exceptions
 
-import org.springframework.http.HttpStatus
-
 class MyExceptionPayload(
-    private val message: String,
-    private val status: HttpStatus
+    private val status: Int,
+    private val message: String
 ) {
     fun getMessage() : String {
         return this.message
     }
 
-    fun getStatus() : HttpStatus {
+    fun getStatus() : Int {
         return this.status
     }
 }
