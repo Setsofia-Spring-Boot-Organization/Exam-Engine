@@ -1,35 +1,19 @@
-# Stage 1: Build the application
-FROM gradle:7.5.1-jdk17 AS BUILD
+FROM springboot/docker:spring-boot-java17
+
+# Set the working directory to /app
 WORKDIR /app
 
-# Copy only the Gradle wrapper and build script first for better caching
-COPY gradle /app/gradle
-COPY gradlew /app/gradlew
-COPY build.gradle.kts /app/
-COPY settings.gradle.kts /app/
+# Copy the application code to the working directory
+COPY src/ ./src/
 
-# Grant execute permissions for the gradlew script (fix)
-RUN chmod +x /app/gradlew
+# Build the application using Gradle
+RUN gradle build
 
-# Download dependencies
-RUN ./gradlew build --no-daemon --stacktrace || return 0
+# Copy the built application to the working directory
+COPY build/libs/*.jar ./app.jar
 
-# Copy the rest of the project files
-COPY . /app
+# Expose the port the application will run on
+EXPOSE 8080
 
-# Package the application
-RUN ./gradlew clean build -x test --no-daemon
-
-# Stage 2: Create the final image
-FROM openjdk:21-slim
-WORKDIR /app
-
-# Fix potential caching issue (optional)
-COPY gradlew /app/gradlew
-RUN chmod +x /app/gradlew  # Reset permissions (optional)
-
-# Copy the JAR from the build stage
-COPY --from=BUILD /build/libs/Exam_engine-0.0.1-SNAPSHOT.jar exam_engine.jar
-
-EXPOSE 8081
-ENTRYPOINT ["java", "-jar", "exam_engine.jar"]
+# Run the application when the container starts
+CMD ["java", "-jar", "app.jar"]
