@@ -17,7 +17,8 @@ class GlobalExceptionHandler {
         when (reason) {
             Reasons.INPUT_FIELDS_MUST_NOT_BE_EMPTY,
             Reasons.USER_ALREADY_EXISTS,
-            Reasons.USER_NOT_FOUND -> status = HttpStatus.BAD_REQUEST
+            Reasons.USER_NOT_FOUND,
+            Reasons.INVALID_PASSWORD -> status = HttpStatus.BAD_REQUEST
         }
 
         val myExceptionPayload = MyExceptionPayload(
