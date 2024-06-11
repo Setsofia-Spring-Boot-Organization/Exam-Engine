@@ -18,7 +18,6 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import java.util.UUID
 
 @RequiredArgsConstructor
 @Service
@@ -40,10 +39,9 @@ class AuthenticationServiceImpl(
     private fun createAccount(accountRegistrationDTO: AccountRegistrationDTO) : ResponseEntity<Any> {
         if (validation.userIsExisting(accountRegistrationDTO)) throw MyExceptions(Reasons.USER_ALREADY_EXISTS)
         val user = Users(
-            userId = UUID.randomUUID().toString(),
-            username = accountRegistrationDTO.getUsername(),
+            name = accountRegistrationDTO.getUsername(),
             userEmail = accountRegistrationDTO.getEmail(),
-            password = passwordEncoder.encode(accountRegistrationDTO.getPassword()),
+            userPassword = passwordEncoder.encode(accountRegistrationDTO.getPassword()),
             role = UserRoles.ADMIN.name
         )
         try {
@@ -71,7 +69,7 @@ class AuthenticationServiceImpl(
                 )
 
                 val token = jwtServiceImpl.generateTokens(user.get())
-                return responses.loginResponse(LoginResponseDAO(status = 201, message = "Login successful!", username = user.get().getName(), token = token))
+                return responses.loginResponse(LoginResponseDAO(status = 201, message = "Login successful!", username = user.get().username, token = token))
             } catch (exception: Exception) {
                 throw exception
             }
