@@ -1,19 +1,13 @@
-FROM springboot/docker:spring-boot-java17
-
-# Set the working directory to /app
+# Stage 1: Build the application
+FROM gradle:7.5.1-jdk17 AS BUILD
 WORKDIR /app
+COPY . .
+RUN gradle build -x test
 
-# Copy the application code to the working directory
-COPY src/ ./src/
+# Stage 2: Create the final image
+FROM openjdk:17.0.1-slim
+WORKDIR /app
+COPY --from=BUILD /build/libs/Exam_engine-0.0.1-SNAPSHOT.jar exam-engine.jar
 
-# Build the application using Gradle
-RUN gradle build
-
-# Copy the built application to the working directory
-COPY build/libs/*.jar ./app.jar
-
-# Expose the port the application will run on
-EXPOSE 8080
-
-# Run the application when the container starts
-CMD ["java", "-jar", "app.jar"]
+EXPOSE 8081
+ENTRYPOINT ["java", "-jar", "allergy.jar"]
