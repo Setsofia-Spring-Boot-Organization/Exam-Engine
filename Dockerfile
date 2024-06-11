@@ -7,7 +7,7 @@ RUN gradle build -x test
 # Stage 2: Create the final image
 FROM openjdk:17.0.1-slim
 WORKDIR /app
-COPY --from=BUILD /build/libs/Exam_engine-0.0.1-SNAPSHOT.jar exam-engine.jar
+COPY --from=BUILD /app/build/libs/Exam_engine-0.0.1-SNAPSHOT.jar exam-engine.jar
 
 EXPOSE 8081
-ENTRYPOINT ["java", "-jar", "allergy.jar"]
+ENTRYPOINT ["java", "-jar", "exam-engine.jar"]
