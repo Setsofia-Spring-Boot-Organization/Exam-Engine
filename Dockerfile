@@ -1,5 +1,15 @@
 # Stage 1: Build the application
-FROM gradle:7.5.1-jdk21 AS BUILD
+FROM openjdk:21-jdk-slim AS BUILD
+
+# Install Gradle
+ENV GRADLE_VERSION=7.5.1
+RUN apt-get update && apt-get install -y wget unzip && \
+    wget https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip && \
+    unzip gradle-${GRADLE_VERSION}-bin.zip && \
+    mv gradle-${GRADLE_VERSION} /opt/gradle && \
+    ln -s /opt/gradle/bin/gradle /usr/bin/gradle && \
+    rm gradle-${GRADLE_VERSION}-bin.zip
+
 WORKDIR /app
 COPY . .
 RUN gradle build -x test
