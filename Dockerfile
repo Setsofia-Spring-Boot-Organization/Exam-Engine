@@ -21,6 +21,8 @@ COPY --from=BUILD /app/build/libs/Exam_engine-0.0.1-SNAPSHOT.jar exam-engine.jar
 
 # Set environment variable for MongoDB URI
 ENV SPRING_DATA_MONGODB_URI="mongodb+srv://nusetorsetsofia101:mHaPvrlzumVYbxzv@exam-engine.lwzviyh.mongodb.net/?retryWrites=true&w=majority&appName=Exam-Engine"
+ENV FRONTEND_URL="http://localhost:4200"
+ENV DEPLOYED_FRONTEND_URL="https://exam-engine-ttu.vercel.app"
 
 EXPOSE 8081
 ENTRYPOINT ["java", "-jar", "exam-engine.jar"]
