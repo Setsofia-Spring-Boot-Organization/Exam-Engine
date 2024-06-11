@@ -29,9 +29,9 @@ class JwtServiceImpl(
     }
 
     // get the user id
-    fun userId(email: String): String {
+    fun userId(email: String): String? {
         val isUser = userRepository.findByUserEmail(email).orElseThrow()
-        return isUser.getId()
+        return isUser.id
     }
 
     // 2. create a method that extracts all claims from the JWTs
