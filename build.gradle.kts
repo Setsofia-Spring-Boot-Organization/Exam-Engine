@@ -15,6 +15,11 @@ java {
 	}
 }
 
+tasks.withType<Jar> {
+	archiveBaseName.set("Exam_engine")
+	archiveVersion.set("0.0.1-SNAPSHOT")
+}
+
 configurations {
 	compileOnly {
 		extendsFrom(configurations.annotationProcessor.get())
