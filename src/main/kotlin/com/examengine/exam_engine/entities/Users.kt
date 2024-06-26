@@ -5,13 +5,16 @@ import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import java.time.LocalDateTime
 
 @Document
 data class Users (
     @Id
     var id: String? = null,
+    var dateAdded: LocalDateTime,
     var name: String,
     var userEmail: String,
+    var gender: String,
     var userPassword: String,
     var role: String
 ): UserDetails {
