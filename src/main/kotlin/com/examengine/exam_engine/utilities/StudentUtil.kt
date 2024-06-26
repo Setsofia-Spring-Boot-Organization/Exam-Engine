@@ -12,8 +12,8 @@ class StudentUtil (
     private val userRepository: UserRepository
 ) {
 
-    fun getStudent(teacherId: String) : Users {
-        val user = userRepository.findById(teacherId)
+    fun getStudent(studentId: String) : Users {
+        val user = userRepository.findById(studentId)
         if (user.isPresent && user.get().role == UserRoles.STUDENT.name) {
             return user.get()
         }

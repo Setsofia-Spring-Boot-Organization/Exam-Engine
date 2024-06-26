@@ -48,6 +48,7 @@ class QuestionUtil {
         return QuestionsDAO.Builder()
             .status(200)
             .message("success")
+            .questionId(createdQuestion.questionId!!)
             .dateCreated(createdQuestion.dateCreated)
             .questionTitle(createdQuestion.questionTitle)
             .questionStatus(createdQuestion.questionStatus)
@@ -55,12 +56,13 @@ class QuestionUtil {
             .questionStartTime(createdQuestion.questionStartTime)
             .questionEndTime(createdQuestion.questionEndTime)
             .questions(createdQuestion.question)
-            .receiver(createdQuestion.receivers)
+            .receivers(createdQuestion.receivers)
             .build()
     }
 
     fun iteratedQuestions(question: QuestionsEntity): QuestionsDAO {
         return QuestionsDAO.Builder()
+            .questionId(question.questionId!!)
             .questionStatus(question.questionStatus)
             .dateCreated(question.dateCreated)
             .questionTitle(question.questionTitle)
@@ -68,7 +70,7 @@ class QuestionUtil {
             .questionStartTime(question.questionStartTime)
             .questionEndTime(question.questionEndTime)
             .questions(question.question)
-            .receiver(question.receivers)
+            .receivers(question.receivers)
         .build()
     }
 }

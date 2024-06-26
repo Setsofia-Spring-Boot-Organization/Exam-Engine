@@ -1,6 +1,5 @@
 package com.examengine.exam_engine.dao
 
-import com.examengine.exam_engine.dto.QuestionReceiverDTO
 import com.examengine.exam_engine.dto.QuestionsDTO
 import com.examengine.exam_engine.enums.QuestionStatus
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -9,6 +8,7 @@ import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class QuestionsDAO(
+    var questionId: String,
     var status: Int?,
     var message: String,
     var dateCreated: LocalDate?,
@@ -18,10 +18,11 @@ data class QuestionsDAO(
     var questionStartTime: LocalDateTime,
     var questionEndTime: LocalDateTime,
     var questions: List<QuestionsDTO>,
-    var receiver: List<QuestionReceiverDTO>
+    var receivers: List<String>
 ) {
     // Nested Builder class
     class Builder {
+        private var questionId: String = ""
         private var status: Int? = null
         private var message: String = ""
         private var dateCreated: LocalDate? = null
@@ -31,8 +32,9 @@ data class QuestionsDAO(
         private lateinit var questionStartTime: LocalDateTime
         private lateinit var questionEndTime: LocalDateTime
         private var questions: List<QuestionsDTO> = listOf()
-        private var receiver: List<QuestionReceiverDTO> = listOf()
+        private var receivers: List<String> = listOf()
 
+        fun questionId(questionId: String) = apply { this.questionId = questionId }
         fun status(status: Int) = apply { this.status = status }
         fun message(message: String) = apply { this.message = message }
         fun dateCreated(dateCreated: LocalDate) = apply { this.dateCreated = dateCreated }
@@ -42,9 +44,10 @@ data class QuestionsDAO(
         fun questionStartTime(questionStartTime: LocalDateTime) = apply { this.questionStartTime = questionStartTime }
         fun questionEndTime(questionEndTime: LocalDateTime) = apply { this.questionEndTime = questionEndTime }
         fun questions(questions: List<QuestionsDTO>) = apply { this.questions = questions }
-        fun receiver(receiver: List<QuestionReceiverDTO>) = apply { this.receiver = receiver }
+        fun receivers(receivers: List<String>) = apply { this.receivers = receivers }
 
         fun build() = QuestionsDAO(
+            questionId,
             status,
             message,
             dateCreated,
@@ -54,7 +57,7 @@ data class QuestionsDAO(
             questionStartTime,
             questionEndTime,
             questions,
-            receiver
+            receivers
         )
     }
 }
