@@ -1,6 +1,5 @@
 package com.examengine.exam_engine.entities
 
-import com.examengine.exam_engine.dto.QuestionReceiverDTO
 import com.examengine.exam_engine.dto.QuestionsDTO
 import com.examengine.exam_engine.enums.QuestionStatus
 import org.springframework.data.annotation.Id
@@ -22,5 +21,5 @@ data class QuestionsEntity (
     var questionStatus: QuestionStatus,
 
     var question: List<QuestionsDTO>,
-    var receivers: List<QuestionReceiverDTO>
+    var receivers: List<String>
 )

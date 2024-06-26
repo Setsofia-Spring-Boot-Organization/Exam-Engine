@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface QuestionsRepository : CrudRepository<QuestionsEntity, String> {
-    @Query("{ 'receivers.email': ?0 }")
+    @Query("{ 'receivers': ?0 }")
     fun findQuestionsEntitiesByReceiversEmail(studentEmail: String): List<QuestionsEntity>
     fun findQuestionsEntitiesByCreator(creatorId: String?) : List<QuestionsEntity>
 }
