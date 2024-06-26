@@ -1,6 +1,6 @@
 package com.examengine.exam_engine.enums
 
-enum class UserRoles(s: String) {
-    ADMIN("ADMIN"),
-    USER("USER")
+enum class UserRoles {
+    TEACHER,
+    STUDENT
 }

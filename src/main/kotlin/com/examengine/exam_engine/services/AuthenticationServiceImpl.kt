@@ -18,6 +18,7 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @RequiredArgsConstructor
 @Service
@@ -32,17 +33,19 @@ class AuthenticationServiceImpl(
 
     override fun registerAccount(accountRegistrationDTO: AccountRegistrationDTO): ResponseEntity<Any> {
         if (validation.isValidRegistrationField(accountRegistrationDTO)) throw MyExceptions(Reasons.INPUT_FIELDS_MUST_NOT_BE_EMPTY)
-        if (validation.isPasswordInvalid(accountRegistrationDTO.getPassword())) throw MyExceptions(Reasons.INVALID_PASSWORD)
+        if (validation.isPasswordInvalid(accountRegistrationDTO.password)) throw MyExceptions(Reasons.INVALID_PASSWORD)
         return createAccount(accountRegistrationDTO)
     }
 
     private fun createAccount(accountRegistrationDTO: AccountRegistrationDTO) : ResponseEntity<Any> {
         if (validation.userIsExisting(accountRegistrationDTO)) throw MyExceptions(Reasons.USER_ALREADY_EXISTS)
         val user = Users(
-            name = accountRegistrationDTO.getUsername(),
-            userEmail = accountRegistrationDTO.getEmail(),
-            userPassword = passwordEncoder.encode(accountRegistrationDTO.getPassword()),
-            role = UserRoles.ADMIN.name
+            dateAdded = LocalDateTime.now(),
+            name = accountRegistrationDTO.username,
+            userEmail = accountRegistrationDTO.email,
+            gender = accountRegistrationDTO.gender,
+            userPassword = passwordEncoder.encode(accountRegistrationDTO.password),
+            role = UserRoles.TEACHER.name
         )
         try {
             userRepository.save(user)
@@ -58,8 +61,9 @@ class AuthenticationServiceImpl(
     }
 
     private fun login(accountLoginDTO: AccountLoginDTO): ResponseEntity<Any> {
-        val user = userRepository.findByUserEmail(accountLoginDTO.getEmail())
-        if (user.isPresent) {
+        val loggedInUser = userRepository.findByUserEmail(accountLoginDTO.getEmail())
+        if (loggedInUser.isPresent) {
+            val user = loggedInUser.get()
             try {
                 authenticationManager.authenticate(
                     UsernamePasswordAuthenticationToken(
@@ -68,8 +72,15 @@ class AuthenticationServiceImpl(
                     )
                 )
 
-                val token = jwtServiceImpl.generateTokens(user.get())
-                return responses.loginResponse(LoginResponseDAO(status = 201, message = "Login successful!", username = user.get().username, token = token))
+                val token = jwtServiceImpl.generateTokens(user)
+                return responses.loginResponse(LoginResponseDAO(
+                    status = 201,
+                    message = "Login successful!",
+                    userId = user.id,
+                    username = user.username,
+                    token = token,
+                    roles = user.role
+                ))
             } catch (exception: Exception) {
                 throw exception
             }

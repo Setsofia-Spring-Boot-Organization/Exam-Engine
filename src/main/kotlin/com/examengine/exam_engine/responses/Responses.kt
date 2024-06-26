@@ -17,10 +17,12 @@ class Responses : ResponseInterface{
 
     override fun loginResponse(loginResponseDAO: LoginResponseDAO): ResponseEntity<Any> {
         return ResponseEntity.status(200).body(LoginResponseDAO(
-            status = loginResponseDAO.getStatus(),
-            message = loginResponseDAO.getMessage(),
-            token = loginResponseDAO.getToken(),
-            username = loginResponseDAO.getUsername()
+            status = loginResponseDAO.status,
+            message = loginResponseDAO.message,
+            userId = loginResponseDAO.userId,
+            username = loginResponseDAO.username,
+            roles = loginResponseDAO.roles,
+            token = loginResponseDAO.token
         ))
     }
 }
