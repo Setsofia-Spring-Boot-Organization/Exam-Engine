@@ -1,9 +1,6 @@
 package com.examengine.exam_engine.services
 
-import com.examengine.exam_engine.dao.AllQuestionsDAO
-import com.examengine.exam_engine.dao.AnsweredQuestionsDAO
-import com.examengine.exam_engine.dao.AnswersDAO
-import com.examengine.exam_engine.dao.QuestionsDAO
+import com.examengine.exam_engine.dao.*
 import com.examengine.exam_engine.dto.*
 import com.examengine.exam_engine.entities.QuestionsEntity
 import com.examengine.exam_engine.entities.StudentAnswersEntity
@@ -92,11 +89,6 @@ class QuestionServiceImpl(
                 // Check if the student's email is one of the receivers' emails
                 val isReceiver = question.receivers.any { it.contains(student.userEmail) }
                 if (isReceiver) {
-                    println("\nQuestion ${teacherQuestion.id}:")
-                    println("Question: ${teacherQuestion.text}")
-                    println("Question type: ${teacherQuestion.type}")
-                    teacherQuestion.options.listIterator().forEach { println(it) }
-
                     // Iterate over each possible answer for the current question
                     for (teacherAnswer in teacherQuestion.correctAnswers) {
                         val isCorrect = teacherAnswer == studentAnswer.answer
@@ -132,5 +124,21 @@ class QuestionServiceImpl(
             .questionId(question.questionId!!)
             .answers(answersDAO)
             .build())
+    }
+
+
+    override fun getAllStudentAnswerHistory(studentId: String): ResponseEntity<AnswerHistoryDAO> {
+        val student = studentUtil.getStudent(studentId)
+        val answerHistory = studentAnswersRepository.findStudentAnswersEntitiesByStudentId(student.id!!)
+
+        if (answerHistory.isEmpty()) throw MyExceptions(Reasons.NO_ANSWERS_AVAILABLE)
+
+        return ResponseEntity.ok(
+            AnswerHistoryDAO.Builder()
+                .status(200)
+                .message("success")
+                .answers(answerHistory)
+                .build()
+        )
     }
 }

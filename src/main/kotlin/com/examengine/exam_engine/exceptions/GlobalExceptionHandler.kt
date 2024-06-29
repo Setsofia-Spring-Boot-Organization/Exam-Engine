@@ -22,9 +22,10 @@ class GlobalExceptionHandler {
             Reasons.INVALID_PASSWORD -> HttpStatus.BAD_REQUEST
 
             Reasons.ONLY_ADMINS_CAN_PERFORM_THIS_ACTION,
-            Reasons.ONLY_STUDENTS_CAN_PERFORM_THIS_ACTION-> HttpStatus.FORBIDDEN
+            Reasons.ONLY_STUDENTS_CAN_PERFORM_THIS_ACTION -> HttpStatus.FORBIDDEN
 
-            Reasons.NO_QUESTIONS_FOUND -> HttpStatus.NOT_FOUND
+            Reasons.NO_QUESTIONS_FOUND,
+            Reasons.NO_ANSWERS_AVAILABLE -> HttpStatus.NOT_FOUND
         }
 
         val myExceptionPayload = MyExceptionPayload(
