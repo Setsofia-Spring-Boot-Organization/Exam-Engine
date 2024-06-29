@@ -5,4 +5,6 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface StudentAnswersRepository : CrudRepository<StudentAnswersEntity, String>
+interface StudentAnswersRepository : CrudRepository<StudentAnswersEntity, String> {
+    fun findStudentAnswersEntitiesByStudentId(studentId: String) : List<StudentAnswersEntity>
+}

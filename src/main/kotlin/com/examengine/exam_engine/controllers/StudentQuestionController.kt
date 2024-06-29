@@ -1,6 +1,7 @@
 package com.examengine.exam_engine.controllers
 
 import com.examengine.exam_engine.dao.AllQuestionsDAO
+import com.examengine.exam_engine.dao.AnswerHistoryDAO
 import com.examengine.exam_engine.dao.AnsweredQuestionsDAO
 import com.examengine.exam_engine.dto.StudentAnswersDTO
 import com.examengine.exam_engine.services.QuestionServiceImpl
@@ -27,5 +28,12 @@ class StudentQuestionController(
         @RequestBody studentAnswersDTO: StudentAnswersDTO,
     ) : ResponseEntity<AnsweredQuestionsDAO> {
         return questionServiceImpl.studentAnswerQuestion(studentId, studentAnswersDTO)
+    }
+
+    @GetMapping("/answers/history/{studentId}")
+    fun getAllAnswers(
+        @PathVariable studentId: String
+    ) : ResponseEntity<AnswerHistoryDAO> {
+        return questionServiceImpl.getAllStudentAnswerHistory(studentId)
     }
 }
