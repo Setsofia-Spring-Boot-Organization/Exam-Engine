@@ -64,23 +64,28 @@ class AuthenticationServiceImpl(
         val loggedInUser = userRepository.findByUserEmail(accountLoginDTO.getEmail())
         if (loggedInUser.isPresent) {
             val user = loggedInUser.get()
-            try {
-                authenticationManager.authenticate(
-                    UsernamePasswordAuthenticationToken(
-                        accountLoginDTO.getEmail(),
-                        accountLoginDTO.getPassword()
-                    )
-                )
 
-                val token = jwtServiceImpl.generateTokens(user)
-                return responses.loginResponse(LoginResponseDAO(
-                    status = 201,
-                    message = "Login successful!",
-                    userId = user.id,
-                    username = user.username,
-                    token = token,
-                    roles = user.role
-                ))
+            try {
+                val userAuth = UsernamePasswordAuthenticationToken(
+                    accountLoginDTO.getEmail(),
+                    accountLoginDTO.getPassword()
+                )
+                try {
+                    authenticationManager.authenticate(userAuth)
+
+                    val token = jwtServiceImpl.generateTokens(user)
+                    return responses.loginResponse(LoginResponseDAO(
+                        status = 201,
+                        message = "Login successful!",
+                        userId = user.id,
+                        username = user.username,
+                        token = token,
+                        roles = user.role
+                    ))
+                } catch (e: Exception) {
+                    println(e)
+                    throw MyExceptions(Reasons.BAD_LOGIN_CREDENTIALS)
+                }
             } catch (exception: Exception) {
                 throw exception
             }

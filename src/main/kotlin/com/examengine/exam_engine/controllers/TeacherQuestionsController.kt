@@ -4,20 +4,21 @@ import com.examengine.exam_engine.dao.AllQuestionsDAO
 import com.examengine.exam_engine.dao.QuestionsDAO
 import com.examengine.exam_engine.dto.QuestionDetailsDTO
 import com.examengine.exam_engine.services.QuestionServiceImpl
+import com.examengine.exam_engine.supabase.SupabaseClient
 import lombok.RequiredArgsConstructor
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
+import java.nio.file.Files
+import java.nio.file.Path
 
 @RestController
 @RequestMapping("/api/v1/exam-engine/teacher")
 @RequiredArgsConstructor
 class TeacherQuestionsController(
-    private val questionServiceImpl: QuestionServiceImpl
+    private val questionServiceImpl: QuestionServiceImpl,
+    private val supabaseClient: SupabaseClient
 ) {
 
     @PostMapping("/create/new-questions/{teacherId}")
@@ -33,5 +34,24 @@ class TeacherQuestionsController(
         @PathVariable teacherId: String
     ) : ResponseEntity<AllQuestionsDAO>{
         return questionServiceImpl.getAllTeacherQuestions(teacherId)
+    }
+
+    @PostMapping("/save/image")
+    fun saveImageToDatabase(
+        @RequestParam("imageFile") imageFile: MultipartFile,
+    ):ResponseEntity<String> {
+        return try {
+            val tempDir: Path =
+                Files.createTempDirectory("images")
+
+            val tempFile: Path = tempDir.resolve(imageFile.originalFilename!!)
+            imageFile.transferTo(tempFile.toFile())
+
+            supabaseClient.saveImage(imageFile, imageFile.originalFilename!!)
+            ResponseEntity.ok("File uploaded successfully: $tempFile")
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            ResponseEntity("Failed to upload file", HttpStatus.INTERNAL_SERVER_ERROR)
+        }
     }
 }

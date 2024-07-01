@@ -19,6 +19,7 @@ class GlobalExceptionHandler {
             Reasons.USER_ALREADY_EXISTS,
             Reasons.USER_NOT_FOUND,
             Reasons.ANSWERS_NOT_SUBMITTED,
+            Reasons.BAD_LOGIN_CREDENTIALS,
             Reasons.INVALID_PASSWORD -> HttpStatus.BAD_REQUEST
 
             Reasons.ONLY_ADMINS_CAN_PERFORM_THIS_ACTION,

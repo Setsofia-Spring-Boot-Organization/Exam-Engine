@@ -55,6 +55,12 @@ dependencies {
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.5")
 	implementation("io.jsonwebtoken:jjwt:0.12.5")
 
+	// https://mvnrepository.com/artifact/io.ktor/ktor-client-core-jvm
+	implementation(platform("io.github.jan-tennert.supabase:bom:2.4.2"))
+	implementation("io.github.jan-tennert.supabase:realtime-kt")
+	implementation("io.github.jan-tennert.supabase:postgrest-kt:2.4.2")
+	implementation("io.github.jan-tennert.supabase:storage-kt:2.4.2")
+	implementation("io.github.jan-tennert.supabase:gotrue-kt:2.4.2")
 }
 
 kotlin {
