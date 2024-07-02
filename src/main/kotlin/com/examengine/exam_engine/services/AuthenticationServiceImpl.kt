@@ -75,7 +75,7 @@ class AuthenticationServiceImpl(
 
                     val token = jwtServiceImpl.generateTokens(user)
                     return responses.loginResponse(LoginResponseDAO(
-                        status = 201,
+                        status = 200,
                         message = "Login successful!",
                         userId = user.id,
                         username = user.username,
