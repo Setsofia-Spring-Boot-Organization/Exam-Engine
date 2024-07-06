@@ -16,22 +16,22 @@ class QuestionUtil {
     fun createQuestion(teacherId: String, questionsDTO: QuestionDetailsDTO): QuestionsEntity {
         if (
             questionsDTO.questionTitle.isEmpty() ||
-            questionsDTO.questionInstruction.isEmpty() ||
-            questionsDTO.questionStartTime == null ||
-            questionsDTO.questionEndTime == null ||
-            questionsDTO.question.isEmpty()
+            questionsDTO.questionInstruction.isEmpty()
+//            questionsDTO.questionStartTime == null ||
+//            questionsDTO.questionEndTime == null ||
+//            questionsDTO.question.isEmpty()
         ) throw MyExceptions(Reasons.INPUT_FIELDS_MUST_NOT_BE_EMPTY)
 
         val newQuestion = QuestionsEntity(
                 creator = teacherId,
                 dateCreated = LocalDate.now(),
-                questionStatus = QuestionStatus.ACTIVE,
+//                questionStatus = QuestionStatus.ACTIVE,
                 questionTitle = questionsDTO.questionTitle,
                 questionInstruction = questionsDTO.questionInstruction,
-                questionStartTime = questionsDTO.questionStartTime!!,
-                questionEndTime = questionsDTO.questionEndTime!!,
-                question = questionsDTO.question,
-                receivers = questionsDTO.questionReceivers
+//                questionStartTime = questionsDTO.questionStartTime!!,
+//                questionEndTime = questionsDTO.questionEndTime!!,
+//                question = questionsDTO.question,
+//                receivers = questionsDTO.questionReceivers
         )
         return newQuestion
     }
@@ -51,26 +51,26 @@ class QuestionUtil {
             .questionId(createdQuestion.questionId!!)
             .dateCreated(createdQuestion.dateCreated)
             .questionTitle(createdQuestion.questionTitle)
-            .questionStatus(createdQuestion.questionStatus)
+//            .questionStatus(createdQuestion.questionStatus)
             .questionInstructions(createdQuestion.questionInstruction)
-            .questionStartTime(createdQuestion.questionStartTime)
-            .questionEndTime(createdQuestion.questionEndTime)
-            .questions(createdQuestion.question)
-            .receivers(createdQuestion.receivers)
+//            .questionStartTime(createdQuestion.questionStartTime)
+//            .questionEndTime(createdQuestion.questionEndTime)
+//            .questions(createdQuestion.question)
+//            .receivers(createdQuestion.receivers)
             .build()
     }
 
     fun iteratedQuestions(question: QuestionsEntity): QuestionsDAO {
         return QuestionsDAO.Builder()
             .questionId(question.questionId!!)
-            .questionStatus(question.questionStatus)
+//            .questionStatus(question.questionStatus)
             .dateCreated(question.dateCreated)
             .questionTitle(question.questionTitle)
             .questionInstructions(question.questionInstruction)
-            .questionStartTime(question.questionStartTime)
-            .questionEndTime(question.questionEndTime)
-            .questions(question.question)
-            .receivers(question.receivers)
+//            .questionStartTime(question.questionStartTime)
+//            .questionEndTime(question.questionEndTime)
+//            .questions(question.question)
+//            .receivers(question.receivers)
         .build()
     }
 }
