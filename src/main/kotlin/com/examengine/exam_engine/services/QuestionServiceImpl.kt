@@ -27,11 +27,20 @@ class QuestionServiceImpl(
 ) : QuestionsInterface {
 
     override fun createNewQuestions(teacherId: String, questionsDTO: QuestionDetailsDTO): ResponseEntity<QuestionsDAO> {
+        println("\nNEW QUESTIONS: $questionsDTO\n")
+
         val user = teacherUtil.getTeacher(teacherId)
         val newQuestion = user.id?.let { questionUtil.createQuestion(it, questionsDTO) }
 
-        val createdQuestion = questionsRepository.save(newQuestion!!)
-        return ResponseEntity.status(200).body(questionUtil.newCreatedQuestionResponse(createdQuestion))
+
+
+        try {
+            val createdQuestion = questionsRepository.save(newQuestion!!)
+            return ResponseEntity.status(200).body(questionUtil.newCreatedQuestionResponse(createdQuestion))
+        } catch (exception: Exception) {
+            println(exception)
+            throw MyExceptions(Reasons.ERROR_CREATING_QUESTION)
+        }
     }
 
 
@@ -83,7 +92,7 @@ class QuestionServiceImpl(
 
         // Iterate over student answers
         for (studentAnswer in studentAnswersDTO.studentAnswers) {
-            // Find the corresponding teacher question
+//             Find the corresponding teacher question
             val teacherQuestion = question.question.find { it.id == studentAnswer.id }
             if (teacherQuestion != null) {
                 // Check if the student's email is one of the receivers' emails

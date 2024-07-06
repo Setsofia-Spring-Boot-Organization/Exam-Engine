@@ -15,25 +15,5 @@ import org.springframework.web.bind.annotation.*
 class StudentQuestionController(
     private val questionServiceImpl: QuestionServiceImpl
 ) {
-    @GetMapping("/get/questions/{studentId}")
-    fun getAllQuestions(
-        @PathVariable studentId: String
-    ) : ResponseEntity<AllQuestionsDAO> {
-        return questionServiceImpl.getAllStudentQuestions(studentId)
-    }
 
-    @PostMapping("/answer/questions/{studentId}")
-    fun answerQuestions(
-        @PathVariable studentId: String,
-        @RequestBody studentAnswersDTO: StudentAnswersDTO,
-    ) : ResponseEntity<AnsweredQuestionsDAO> {
-        return questionServiceImpl.studentAnswerQuestion(studentId, studentAnswersDTO)
-    }
-
-    @GetMapping("/answers/history/{studentId}")
-    fun getAllAnswers(
-        @PathVariable studentId: String
-    ) : ResponseEntity<AnswerHistoryDAO> {
-        return questionServiceImpl.getAllStudentAnswerHistory(studentId)
-    }
 }
