@@ -2,6 +2,7 @@ package com.examengine.exam_engine.services
 
 import com.examengine.exam_engine.dao.LoginResponseDAO
 import com.examengine.exam_engine.dao.SignupResponseDAO
+import com.examengine.exam_engine.dao.UserDetailsDAO
 import com.examengine.exam_engine.dto.AccountLoginDTO
 import com.examengine.exam_engine.dto.AccountRegistrationDTO
 import com.examengine.exam_engine.entities.Users
@@ -31,6 +32,7 @@ class AuthenticationServiceImpl(
     private val passwordEncoder: PasswordEncoder
 ) : AuthenticationInterface {
 
+
     override fun registerAccount(accountRegistrationDTO: AccountRegistrationDTO): ResponseEntity<Any> {
         if (validation.isValidRegistrationField(accountRegistrationDTO)) throw MyExceptions(Reasons.INPUT_FIELDS_MUST_NOT_BE_EMPTY)
         if (validation.isPasswordInvalid(accountRegistrationDTO.password)) throw MyExceptions(Reasons.INVALID_PASSWORD)
@@ -58,6 +60,18 @@ class AuthenticationServiceImpl(
     override fun loginUser(accountLoginDTO: AccountLoginDTO): ResponseEntity<Any> {
         if (validation.isValidLoginField(accountLoginDTO)) throw MyExceptions(Reasons.INPUT_FIELDS_MUST_NOT_BE_EMPTY)
         return login(accountLoginDTO)
+    }
+
+    override fun getUserDetails(userId: String): ResponseEntity<UserDetailsDAO> {
+        val isUser = userRepository.findById(userId)
+        if (isUser.isPresent) {
+            return ResponseEntity.ok(UserDetailsDAO(
+                200,
+                "success",
+                isUser.get()
+            ))
+        }
+        throw MyExceptions(Reasons.USER_NOT_FOUND)
     }
 
     private fun login(accountLoginDTO: AccountLoginDTO): ResponseEntity<Any> {
