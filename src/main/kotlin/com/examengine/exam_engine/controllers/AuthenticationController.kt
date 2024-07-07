@@ -1,13 +1,11 @@
 package com.examengine.exam_engine.controllers
 
-import com.examengine.exam_engine.dao.AllQuestionsDAO
-import com.examengine.exam_engine.dao.AnswerHistoryDAO
-import com.examengine.exam_engine.dao.AnsweredQuestionsDAO
-import com.examengine.exam_engine.dao.QuestionsDAO
+import com.examengine.exam_engine.dao.*
 import com.examengine.exam_engine.dto.AccountLoginDTO
 import com.examengine.exam_engine.dto.AccountRegistrationDTO
 import com.examengine.exam_engine.dto.QuestionDetailsDTO
 import com.examengine.exam_engine.dto.StudentAnswersDTO
+import com.examengine.exam_engine.entities.Users
 import com.examengine.exam_engine.services.AuthenticationServiceImpl
 import com.examengine.exam_engine.services.QuestionServiceImpl
 import com.examengine.exam_engine.supabase.SupabaseClient
@@ -41,6 +39,11 @@ class AuthenticationController(
 
 
 
+    // Generic user controller
+    @GetMapping("/user/account/{userId}")
+    fun getUserDetails(@PathVariable userId: String): ResponseEntity<UserDetailsDAO> {
+        return authenticationServiceImpl.getUserDetails(userId);
+    }
 
 
 
