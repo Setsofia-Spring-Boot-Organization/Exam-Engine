@@ -47,7 +47,7 @@ class QuestionUtil {
     fun newCreatedQuestionResponse(createdQuestion: QuestionsEntity): QuestionsDAO {
         return QuestionsDAO.Builder()
             .status(200)
-            .message("success")
+            .message("Questions created successfully!")
             .questionId(createdQuestion.questionId!!)
             .dateCreated(createdQuestion.dateCreated)
             .questionTitle(createdQuestion.questionTitle)

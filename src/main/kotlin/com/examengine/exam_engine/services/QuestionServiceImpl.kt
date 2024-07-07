@@ -27,12 +27,8 @@ class QuestionServiceImpl(
 ) : QuestionsInterface {
 
     override fun createNewQuestions(teacherId: String, questionsDTO: QuestionDetailsDTO): ResponseEntity<QuestionsDAO> {
-        println("\nNEW QUESTIONS: $questionsDTO\n")
-
         val user = teacherUtil.getTeacher(teacherId)
         val newQuestion = user.id?.let { questionUtil.createQuestion(it, questionsDTO) }
-
-
 
         try {
             val createdQuestion = questionsRepository.save(newQuestion!!)
