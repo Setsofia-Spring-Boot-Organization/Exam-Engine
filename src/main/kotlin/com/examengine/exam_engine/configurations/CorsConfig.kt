@@ -15,7 +15,7 @@ class CorsConfig(
 ) : WebMvcConfigurer {
 
     override fun addCorsMappings(registry: CorsRegistry) {
-        registry.addMapping("/exam-engine/api/v1/auth/**")
+        registry.addMapping("/exam-engine/api/v1/**")
             .allowedOrigins("$frontendURL/", "$deployedFrontendURL/")
             .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH")
         super.addCorsMappings(registry)
