@@ -23,7 +23,7 @@ class SecurityConfig(
         return httpSecurity
             .csrf { obj: CsrfConfigurer<HttpSecurity> -> obj.disable() }
             .authorizeHttpRequests { authRequests ->
-                authRequests.requestMatchers("/exam-engine/api/v1/auth/**").permitAll()
+                authRequests.requestMatchers("/exam-engine/api/v1/**").permitAll()
                 authRequests.anyRequest().authenticated()
             }
             .sessionManagement { sessionManagement: SessionManagementConfigurer<HttpSecurity?> ->
