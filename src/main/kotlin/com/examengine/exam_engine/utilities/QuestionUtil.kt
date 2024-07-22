@@ -128,6 +128,7 @@ class QuestionUtil(
                 .questionStartTime(question.questionStartTime)
                 .questionEndTime(question.questionEndTime)
                 .questions(question.question)
+                .passMark(question.passMark)
                 .receivers(question.receivers)
                 .build()
     }
