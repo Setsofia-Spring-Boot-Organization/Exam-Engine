@@ -21,5 +21,8 @@ data class QuestionsEntity (
     var questionStatus: QuestionStatus,
 
     var question: List<QuestionsDTO>,
-    var receivers: List<String>
+    var passMark: Int,
+
+    var receivers: List<String>,
+    var receiversDone: List<String>?
 )
