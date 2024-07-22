@@ -7,5 +7,6 @@ data class QuestionsDTO(
     var text: String,
     var type: QuestionsType,
     var options: List<String>,
-    var correctAnswers: List<String>
+    var correctAnswers: List<String>,
+    var score: Int
 )

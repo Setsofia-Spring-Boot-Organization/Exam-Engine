@@ -18,6 +18,9 @@ data class QuestionsDAO(
     var questionStartTime: LocalDateTime,
     var questionEndTime: LocalDateTime,
     var questions: List<QuestionsDTO>,
+    var studentQuestions: List<StudentQuestionsDAO>?,
+    var totalScore: Int?,
+    var passMark: Int?,
     var receivers: List<String>
 ) {
     // Nested Builder class
@@ -32,6 +35,9 @@ data class QuestionsDAO(
         private lateinit var questionStartTime: LocalDateTime
         private lateinit var questionEndTime: LocalDateTime
         private var questions: List<QuestionsDTO> = listOf()
+        private var studentQuestions: List<StudentQuestionsDAO>? = null
+        private var totalScore: Int? = null
+        private var passMark: Int? = null
         private var receivers: List<String> = listOf()
 
         fun questionId(questionId: String) = apply { this.questionId = questionId }
@@ -44,6 +50,9 @@ data class QuestionsDAO(
         fun questionStartTime(questionStartTime: LocalDateTime) = apply { this.questionStartTime = questionStartTime }
         fun questionEndTime(questionEndTime: LocalDateTime) = apply { this.questionEndTime = questionEndTime }
         fun questions(questions: List<QuestionsDTO>) = apply { this.questions = questions }
+        fun studentQuestions(studentQuestions: List<StudentQuestionsDAO>) = apply { this.studentQuestions = studentQuestions }
+        fun totalScore(totalScore: Int) = apply { this.totalScore = totalScore }
+        fun passMark(passMark: Int) = apply { this.passMark = passMark }
         fun receivers(receivers: List<String>) = apply { this.receivers = receivers }
 
         fun build() = QuestionsDAO(
@@ -57,8 +66,10 @@ data class QuestionsDAO(
             questionStartTime,
             questionEndTime,
             questions,
+            studentQuestions,
+            totalScore,
+            passMark,
             receivers
         )
     }
 }
-

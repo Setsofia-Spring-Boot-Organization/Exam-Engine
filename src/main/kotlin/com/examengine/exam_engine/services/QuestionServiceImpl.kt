@@ -2,11 +2,13 @@ package com.examengine.exam_engine.services
 
 import com.examengine.exam_engine.dao.*
 import com.examengine.exam_engine.dto.*
+import com.examengine.exam_engine.entities.AnsweredQuestionsEntity
 import com.examengine.exam_engine.entities.QuestionsEntity
 import com.examengine.exam_engine.entities.StudentAnswersEntity
 import com.examengine.exam_engine.enums.Reasons
 import com.examengine.exam_engine.exceptions.MyExceptions
 import com.examengine.exam_engine.interfaces.QuestionsInterface
+import com.examengine.exam_engine.repositories.AnsweredQuestionsRepository
 import com.examengine.exam_engine.repositories.QuestionsRepository
 import com.examengine.exam_engine.repositories.StudentAnswersRepository
 import com.examengine.exam_engine.utilities.QuestionUtil
@@ -15,6 +17,7 @@ import com.examengine.exam_engine.utilities.TeacherUtil
 import lombok.RequiredArgsConstructor
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import java.util.Optional
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +26,8 @@ class QuestionServiceImpl(
     private var studentUtil: StudentUtil,
     private var questionUtil: QuestionUtil,
     private var questionsRepository: QuestionsRepository,
-    private val studentAnswersRepository: StudentAnswersRepository
+    private val studentAnswersRepository: StudentAnswersRepository,
+    private val answeredQuestionsRepository: AnsweredQuestionsRepository
 ) : QuestionsInterface {
 
     override fun createNewQuestions(teacherId: String, questionsDTO: QuestionDetailsDTO): ResponseEntity<QuestionsDAO> {
@@ -55,6 +59,7 @@ class QuestionServiceImpl(
 
 
     override fun getAllStudentQuestions(studentId: String): ResponseEntity<AllQuestionsDAO> {
+
         val user = studentUtil.getStudent(studentId)
 
         val questions: List<QuestionsEntity> = questionsRepository.findQuestionsEntitiesByReceiversEmail(user.userEmail)
@@ -62,7 +67,7 @@ class QuestionServiceImpl(
 
         val questionsDAO = ArrayList<QuestionsDAO>()
         for (question in questions) {
-            val questionDAO = questionUtil.iteratedQuestions(question)
+            val questionDAO = questionUtil.iteratedStudentQuestions(question, studentId)
             questionsDAO.add(questionDAO)
         }
 
@@ -104,6 +109,7 @@ class QuestionServiceImpl(
                             .text(teacherQuestion.text)
                             .type(teacherQuestion.type.name)
                             .options(teacherQuestion.options)
+                            .userChoice(listOf(studentAnswer.answer!!))
                             .correctAnswers(teacherQuestion.correctAnswers)
                             .build()
                         // add the question and answer to the dao
@@ -117,9 +123,12 @@ class QuestionServiceImpl(
         val studentAnswers = StudentAnswersEntity(
             questionId = question.questionId!!,
             studentId = studentId,
-            answers = answersDAO
+            answers = answersDAO,
         )
         studentAnswersRepository.save(studentAnswers)
+
+        // update the answered question status to DONE
+        saveAnsweredQuestionStatus(question.questionId!!, student.id!!)
 
         return ResponseEntity.ok(AnsweredQuestionsDAO.Builder()
             .status(200)
@@ -131,6 +140,7 @@ class QuestionServiceImpl(
 
 
     override fun getAllStudentAnswerHistory(studentId: String): ResponseEntity<AnswerHistoryDAO> {
+
         val student = studentUtil.getStudent(studentId)
         val answerHistory = studentAnswersRepository.findStudentAnswersEntitiesByStudentId(student.id!!)
 
@@ -143,5 +153,21 @@ class QuestionServiceImpl(
                 .answers(answerHistory)
                 .build()
         )
+    }
+
+    // some helper functions
+    private fun saveAnsweredQuestionStatus(questionId: String, userId: String) {
+        // find the answered question and update its status from ACTIVE to DONE
+        val isAnsweredQuestion: Optional<AnsweredQuestionsEntity> = answeredQuestionsRepository.findByQuestionIdAndUserId(questionId, userId)
+
+        if (isAnsweredQuestion.isPresent) {
+            return
+        } else {
+            val newAnsweredQuestionsEntity = AnsweredQuestionsEntity(
+                questionId = questionId,
+                userId = userId
+            )
+            answeredQuestionsRepository.save(newAnsweredQuestionsEntity)
+        }
     }
 }

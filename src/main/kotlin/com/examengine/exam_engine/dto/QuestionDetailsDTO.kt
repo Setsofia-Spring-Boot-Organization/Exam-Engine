@@ -10,5 +10,7 @@ data class QuestionDetailsDTO(
     var questionEndTime: LocalDateTime?,
 
     var question: List<QuestionsDTO>,
+    var passMark: Int,
+
     var questionReceivers: List<String>
 )
