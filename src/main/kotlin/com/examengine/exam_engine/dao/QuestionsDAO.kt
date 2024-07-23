@@ -14,11 +14,12 @@ data class QuestionsDAO(
     var dateCreated: LocalDate?,
     var questionTitle: String,
     var questionInstructions: String,
-    var questionStatus: QuestionStatus,
-    var questionStartTime: LocalDateTime,
-    var questionEndTime: LocalDateTime,
+    var questionStatus: QuestionStatus?,
+    var questionStartTime: LocalDateTime?,
+    var questionEndTime: LocalDateTime?,
     var questions: List<QuestionsDTO>,
     var studentQuestions: List<StudentQuestionsDAO>?,
+    var totalCounts: Int?,
     var totalScore: Int?,
     var passMark: Int?,
     var receivers: List<String>
@@ -31,12 +32,13 @@ data class QuestionsDAO(
         private var dateCreated: LocalDate? = null
         private var questionTitle: String = ""
         private var questionInstructions: String = ""
-        private lateinit var questionStatus: QuestionStatus
-        private lateinit var questionStartTime: LocalDateTime
-        private lateinit var questionEndTime: LocalDateTime
+        private var questionStatus: QuestionStatus? = null
+        private var questionStartTime: LocalDateTime? = null
+        private var questionEndTime: LocalDateTime? = null
         private var questions: List<QuestionsDTO> = listOf()
         private var studentQuestions: List<StudentQuestionsDAO>? = null
         private var totalScore: Int? = null
+        private var totalCounts: Int? = null
         private var passMark: Int? = null
         private var receivers: List<String> = listOf()
 
@@ -52,6 +54,7 @@ data class QuestionsDAO(
         fun questions(questions: List<QuestionsDTO>) = apply { this.questions = questions }
         fun studentQuestions(studentQuestions: List<StudentQuestionsDAO>) = apply { this.studentQuestions = studentQuestions }
         fun totalScore(totalScore: Int) = apply { this.totalScore = totalScore }
+        fun totalCounts(totalCounts: Int) = apply { this.totalCounts = totalCounts }
         fun passMark(passMark: Int) = apply { this.passMark = passMark }
         fun receivers(receivers: List<String>) = apply { this.receivers = receivers }
 
@@ -67,6 +70,7 @@ data class QuestionsDAO(
             questionEndTime,
             questions,
             studentQuestions,
+            totalCounts,
             totalScore,
             passMark,
             receivers
