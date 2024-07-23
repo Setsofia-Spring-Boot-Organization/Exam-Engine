@@ -2,24 +2,33 @@ package com.examengine.exam_engine.utilities
 
 import com.examengine.exam_engine.dao.AllQuestionsDAO
 import com.examengine.exam_engine.dao.QuestionsDAO
-import com.examengine.exam_engine.dao.StudentQuestionsDAO
 import com.examengine.exam_engine.dto.QuestionDetailsDTO
-import com.examengine.exam_engine.entities.AnsweredQuestionsEntity
 import com.examengine.exam_engine.entities.QuestionsEntity
 import com.examengine.exam_engine.enums.QuestionStatus
 import com.examengine.exam_engine.enums.Reasons
 import com.examengine.exam_engine.exceptions.MyExceptions
-import com.examengine.exam_engine.repositories.AnsweredQuestionsRepository
 import lombok.RequiredArgsConstructor
 import org.springframework.stereotype.Component
 import java.time.LocalDate
-import java.util.Optional
 
 @Component
 @RequiredArgsConstructor
 class QuestionUtil(
-    private val answeredQuestionsRepository: AnsweredQuestionsRepository
 ) {
+    fun iteratedQuestions(question: QuestionsEntity): QuestionsDAO {
+        return QuestionsDAO.Builder()
+            .questionId(question.questionId!!)
+            .questionStatus(question.questionStatus)
+            .dateCreated(question.dateCreated)
+            .questionTitle(question.questionTitle)
+            .questionInstructions(question.questionInstruction)
+            .questionStartTime(question.questionStartTime)
+            .questionEndTime(question.questionEndTime)
+            .questions(question.question)
+            .passMark(question.passMark)
+            .receivers(question.receivers)
+            .build()
+    }
 
     fun createQuestion(teacherId: String, questionsDTO: QuestionDetailsDTO): QuestionsEntity {
         if (
@@ -54,6 +63,24 @@ class QuestionUtil(
         )
     }
 
+    fun getAllTeacherQuestionsWithLimitedResults(questionsDAO: List<QuestionsDAO>): AllQuestionsDAO {
+        return AllQuestionsDAO(
+            status = 200,
+            message = "success",
+            questions = questionsDAO.map { question ->
+                QuestionsDAO
+                    .Builder()
+                    .questionId(question.questionId)
+                    .questionTitle(question.questionTitle)
+                    .questionStartTime(question.questionStartTime!!)
+                    .questionEndTime(question.questionEndTime!!)
+                    .passMark(question.passMark!!)
+                    .questionStatus(question.questionStatus!!)
+                    .build()
+            }
+        )
+    }
+
     fun newCreatedQuestionResponse(createdQuestion: QuestionsEntity): QuestionsDAO {
         return QuestionsDAO.Builder()
             .status(200)
@@ -69,67 +96,5 @@ class QuestionUtil(
             .receivers(createdQuestion.receivers)
             .passMark(createdQuestion.passMark)
             .build()
-    }
-
-    fun iteratedStudentQuestions(question: QuestionsEntity, studentId: String): QuestionsDAO {
-        val answeredQuestionsEntity: Optional<AnsweredQuestionsEntity> = answeredQuestionsRepository.findByQuestionIdAndUserId(question.questionId!!, studentId)
-        if (answeredQuestionsEntity.isPresent) {
-            return QuestionsDAO.Builder()
-                .questionId(question.questionId!!)
-                .questionStatus(QuestionStatus.DONE)
-                .dateCreated(question.dateCreated)
-                .questionTitle(question.questionTitle)
-                .questionInstructions(question.questionInstruction)
-                .questionStartTime(question.questionStartTime)
-                .questionEndTime(question.questionEndTime)
-                .studentQuestions(question.question.map { studentQuestion ->
-                    StudentQuestionsDAO
-                        .Builder()
-                        .id(studentQuestion.id)
-                        .text(studentQuestion.text)
-                        .type(studentQuestion.type)
-                        .score(studentQuestion.score)
-                        .options(studentQuestion.options)
-                        .build()
-
-                })
-                .build()
-        } else {
-            return QuestionsDAO.Builder()
-                .questionId(question.questionId!!)
-                .questionStatus(QuestionStatus.PENDING)
-                .dateCreated(question.dateCreated)
-                .questionTitle(question.questionTitle)
-                .questionInstructions(question.questionInstruction)
-                .questionStartTime(question.questionStartTime)
-                .questionEndTime(question.questionEndTime)
-                .studentQuestions(question.question.map { studentQuestion ->
-                    StudentQuestionsDAO
-                        .Builder()
-                        .id(studentQuestion.id)
-                        .text(studentQuestion.text)
-                        .type(studentQuestion.type)
-                        .score(studentQuestion.score)
-                        .options(studentQuestion.options)
-                        .build()
-
-                })
-                .build()
-        }
-    }
-
-    fun iteratedQuestions(question: QuestionsEntity): QuestionsDAO {
-            return QuestionsDAO.Builder()
-                .questionId(question.questionId!!)
-                .questionStatus(question.questionStatus)
-                .dateCreated(question.dateCreated)
-                .questionTitle(question.questionTitle)
-                .questionInstructions(question.questionInstruction)
-                .questionStartTime(question.questionStartTime)
-                .questionEndTime(question.questionEndTime)
-                .questions(question.question)
-                .passMark(question.passMark)
-                .receivers(question.receivers)
-                .build()
     }
 }

@@ -12,8 +12,8 @@ import com.examengine.exam_engine.repositories.AnsweredQuestionsRepository
 import com.examengine.exam_engine.repositories.QuestionsRepository
 import com.examengine.exam_engine.repositories.StudentAnswersRepository
 import com.examengine.exam_engine.utilities.QuestionUtil
+import com.examengine.exam_engine.utilities.StudentQuestionUtil
 import com.examengine.exam_engine.utilities.StudentUtil
-import com.examengine.exam_engine.utilities.TeacherUtil
 import lombok.RequiredArgsConstructor
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -22,42 +22,13 @@ import java.util.Optional
 @Service
 @RequiredArgsConstructor
 class QuestionServiceImpl(
-    private var teacherUtil: TeacherUtil,
     private var studentUtil: StudentUtil,
     private var questionUtil: QuestionUtil,
+    private var studentQuestionUtil: StudentQuestionUtil,
     private var questionsRepository: QuestionsRepository,
     private val studentAnswersRepository: StudentAnswersRepository,
     private val answeredQuestionsRepository: AnsweredQuestionsRepository
 ) : QuestionsInterface {
-
-    override fun createNewQuestions(teacherId: String, questionsDTO: QuestionDetailsDTO): ResponseEntity<QuestionsDAO> {
-        val user = teacherUtil.getTeacher(teacherId)
-        val newQuestion = user.id?.let { questionUtil.createQuestion(it, questionsDTO) }
-
-        try {
-            val createdQuestion = questionsRepository.save(newQuestion!!)
-            return ResponseEntity.status(200).body(questionUtil.newCreatedQuestionResponse(createdQuestion))
-        } catch (exception: Exception) {
-            throw MyExceptions(Reasons.ERROR_CREATING_QUESTION)
-        }
-    }
-
-    override fun getAllTeacherQuestions(teacherId: String): ResponseEntity<AllQuestionsDAO> {
-        val user = teacherUtil.getTeacher(teacherId)
-
-        val questions: List<QuestionsEntity> = questionsRepository.findQuestionsEntitiesByCreator(user.id)
-        if (questions.isEmpty()) throw MyExceptions(Reasons.NO_QUESTIONS_FOUND)
-
-        val questionsDAO = ArrayList<QuestionsDAO>()
-        for (question in questions) {
-            val questionDAO = questionUtil.iteratedQuestions(question)
-            questionsDAO.add(questionDAO)
-        }
-
-        return ResponseEntity.status(200).body(questionUtil.successQuestionRequestResponse(questionsDAO))
-    }
-
-
     override fun getAllStudentQuestions(studentId: String): ResponseEntity<AllQuestionsDAO> {
 
         val user = studentUtil.getStudent(studentId)
@@ -67,7 +38,7 @@ class QuestionServiceImpl(
 
         val questionsDAO = ArrayList<QuestionsDAO>()
         for (question in questions) {
-            val questionDAO = questionUtil.iteratedStudentQuestions(question, studentId)
+            val questionDAO = studentQuestionUtil.iteratedStudentQuestions(question, studentId)
             questionsDAO.add(questionDAO)
         }
 

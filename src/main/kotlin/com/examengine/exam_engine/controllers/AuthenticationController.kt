@@ -7,6 +7,7 @@ import com.examengine.exam_engine.dto.QuestionDetailsDTO
 import com.examengine.exam_engine.dto.StudentAnswersDTO
 import com.examengine.exam_engine.services.AuthenticationServiceImpl
 import com.examengine.exam_engine.services.QuestionServiceImpl
+import com.examengine.exam_engine.services.TeacherQuestionServiceImpl
 import com.examengine.exam_engine.supabase.SupabaseClient
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -20,7 +21,8 @@ import java.nio.file.Path
 class AuthenticationController(
     private val authenticationServiceImpl: AuthenticationServiceImpl,
     private val questionServiceImpl: QuestionServiceImpl,
-    private val supabaseClient: SupabaseClient
+    private val supabaseClient: SupabaseClient,
+    private val teacherQuestionServiceImpl: TeacherQuestionServiceImpl
 ) {
 
     // register account
@@ -55,15 +57,53 @@ class AuthenticationController(
         @PathVariable teacherId: String,
         @RequestBody questionDetailsDTO: QuestionDetailsDTO
     ) : ResponseEntity<QuestionsDAO>{
-        return questionServiceImpl.createNewQuestions(teacherId, questionDetailsDTO)
+        return teacherQuestionServiceImpl.createNewQuestions(teacherId, questionDetailsDTO)
     }
 
     @GetMapping("/teacher/get/questions/{teacherId}")
-    fun getAllQuestions(
+    fun getAllTeacherQuestions(
         @PathVariable teacherId: String
     ) : ResponseEntity<AllQuestionsDAO>{
-        return questionServiceImpl.getAllTeacherQuestions(teacherId)
+        return teacherQuestionServiceImpl.getAllTeacherQuestions(teacherId)
     }
+
+    @GetMapping("/teacher/get/questions/{teacherId}/limited-details")
+    fun getAllTeacherQuestionsWithLimitedResults(
+        @PathVariable teacherId: String
+    ) : ResponseEntity<AllQuestionsDAO>{
+        return teacherQuestionServiceImpl.getAllTeacherQuestionsWithLimitedResults(teacherId)
+    }
+
+    @GetMapping("/teacher/get/questions/{teacherId}/receivers/total/{questionId}")
+    fun getAllTeacherQuestionsReceiversCount(
+        @PathVariable questionId: String,
+        @PathVariable teacherId: String
+    ) : ResponseEntity<QuestionsDAO>{
+        return teacherQuestionServiceImpl.getAllTeacherQuestionsReceiversCount(questionId, teacherId)
+    }
+
+    @GetMapping("/teacher/get/questions/{teacherId}/receivers/done/{questionId}")
+    fun getAllTotalCountOfDoneStudents(
+        @PathVariable questionId: String,
+        @PathVariable teacherId: String
+    ) : ResponseEntity<QuestionsDAO>{
+        return teacherQuestionServiceImpl.getAllTotalCountOfDoneStudents(questionId, teacherId)
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     @PostMapping("/save/image") // testing

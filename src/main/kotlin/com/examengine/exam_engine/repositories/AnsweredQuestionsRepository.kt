@@ -8,4 +8,10 @@ import java.util.Optional
 @Repository
 interface AnsweredQuestionsRepository : CrudRepository<AnsweredQuestionsEntity, String>{
     fun findByQuestionIdAndUserId(questionId: String, userId: String): Optional<AnsweredQuestionsEntity>
+
+    /**
+     * @param questionId the question id
+     * @return list of AnsweredQuestionEntity
+     */
+    fun findAnsweredQuestionsEntitiesByQuestionId(questionId: String): List<AnsweredQuestionsEntity>
 }
