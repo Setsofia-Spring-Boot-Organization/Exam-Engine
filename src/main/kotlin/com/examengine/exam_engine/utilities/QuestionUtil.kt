@@ -10,6 +10,7 @@ import com.examengine.exam_engine.exceptions.MyExceptions
 import lombok.RequiredArgsConstructor
 import org.springframework.stereotype.Component
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Component
 @RequiredArgsConstructor
@@ -56,10 +57,33 @@ class QuestionUtil(
     }
 
     fun successQuestionRequestResponse(questionsDAO: List<QuestionsDAO>): AllQuestionsDAO {
+        val questions = ArrayList<QuestionsDAO>()
+        for (question in questionsDAO) {
+            val questionStatus =  if (question.questionEndTime!! < LocalDateTime.now()) {
+                QuestionStatus.DONE
+            } else {
+                QuestionStatus.ACTIVE
+            }
+
+            questions.add(
+                QuestionsDAO
+                    .Builder()
+                    .questionId(question.questionId)
+                    .dateCreated(question.dateCreated!!)
+                    .questionTitle(question.questionTitle)
+                    .questionStatus(questionStatus)
+                    .questionStartTime(question.questionStartTime!!)
+                    .questionEndTime(question.questionEndTime!!)
+                    .passMark(question.passMark!!)
+                    .questions(question.questions)
+                    .receivers(question.receivers)
+                    .build())
+        }
+
         return AllQuestionsDAO(
             status = 200,
             message = "success",
-            questions = questionsDAO
+            questions = questions
         )
     }
 
