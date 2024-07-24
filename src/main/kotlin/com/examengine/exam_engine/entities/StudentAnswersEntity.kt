@@ -13,4 +13,6 @@ data class StudentAnswersEntity(
     var studentId: String,
 
     var answers: List<AnswersDAO>,
+
+    var totalMarks: Int
 )

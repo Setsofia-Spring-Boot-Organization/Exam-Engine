@@ -24,6 +24,7 @@ class GlobalExceptionHandler {
             Reasons.INVALID_PASSWORD -> HttpStatus.BAD_REQUEST
 
             Reasons.ONLY_ADMINS_CAN_PERFORM_THIS_ACTION,
+            Reasons.QUESTION_ALREADY_ANSWERED,
             Reasons.ONLY_STUDENTS_CAN_PERFORM_THIS_ACTION -> HttpStatus.FORBIDDEN
 
             Reasons.NO_QUESTIONS_FOUND,

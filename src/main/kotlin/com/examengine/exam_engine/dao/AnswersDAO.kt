@@ -1,5 +1,8 @@
 package com.examengine.exam_engine.dao
 
+import com.fasterxml.jackson.annotation.JsonInclude
+
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 class AnswersDAO (
     var id: Int?,
     var text: String,

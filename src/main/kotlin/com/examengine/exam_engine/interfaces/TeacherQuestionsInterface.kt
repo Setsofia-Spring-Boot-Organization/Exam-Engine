@@ -38,4 +38,18 @@ interface TeacherQuestionsInterface {
      * @return the total count of students that finished an exam
      */
     fun getAllTotalCountOfDoneStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO>
+
+    /**
+     * @param questionId the question id as a parameter is used to fetch a single question from the database
+     * @param teacherId the id of the teacher that is requesting the question
+     * @return the total count of students that pass an exam
+     */
+    fun getAllTotalCountOfPassStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO>
+
+    /**
+     * @param questionId the question id as a parameter is used to fetch a single question from the database
+     * @param teacherId the id of the teacher that is requesting the question
+     * @return the total count of students that failed an exam
+     */
+    fun getAllTotalCountOfFailedStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO>
 }
