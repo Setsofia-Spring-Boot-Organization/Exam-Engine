@@ -22,6 +22,7 @@ class TeacherQuestionServiceImpl(
     private val teacherQuestionUtil: TeacherQuestionUtil
 ): TeacherQuestionsInterface {
 
+    // TODO: add total marks to the response
     override fun createNewQuestions(teacherId: String, questionsDTO: QuestionDetailsDTO): ResponseEntity<QuestionsDAO> {
         val user = teacherUtil.getTeacher(teacherId)
         val newQuestion = user.id?.let { questionUtil.createQuestion(it, questionsDTO) }
@@ -72,5 +73,15 @@ class TeacherQuestionServiceImpl(
     override fun getAllTotalCountOfDoneStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO> {
         val answeredQuestion = teacherQuestionUtil.getSubmittedAnswers(questionId, teacherId)
         return teacherQuestionUtil.showTotalCountResponse(answeredQuestion.size)
+    }
+
+    override fun getAllTotalCountOfPassStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO> {
+        val passStudents = teacherQuestionUtil.getPassOrFailedStudents(questionId, teacherId, "pass")
+        return teacherQuestionUtil.showTotalCountResponse(passStudents.size)
+    }
+
+    override fun getAllTotalCountOfFailedStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO> {
+        val passStudents = teacherQuestionUtil.getPassOrFailedStudents(questionId, teacherId, "fail")
+        return teacherQuestionUtil.showTotalCountResponse(passStudents.size)
     }
 }

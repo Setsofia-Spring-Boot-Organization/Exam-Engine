@@ -59,6 +59,10 @@ class QuestionServiceImpl(
 
         val question = isQuestion.get()
         val answersDAO = ArrayList<AnswersDAO>()
+        val totalMark = ArrayList<Int>()
+
+        val isQuestionAnswered = answeredQuestionsRepository.findByQuestionIdAndUserId(question.questionId!!, studentId)
+        if (isQuestionAnswered.isPresent) throw MyExceptions(Reasons.QUESTION_ALREADY_ANSWERED)
 
         // Iterate over student answers
         for (studentAnswer in studentAnswersDTO.studentAnswers) {
@@ -71,7 +75,10 @@ class QuestionServiceImpl(
                     // Iterate over each possible answer for the current question
                     for (teacherAnswer in teacherQuestion.correctAnswers) {
                         val isCorrect = teacherAnswer == studentAnswer.answer
-                        val result = if (isCorrect) "Correct" else "Incorrect"
+                        val result = if (isCorrect) {
+                            totalMark.add(teacherQuestion.score)
+                            "Correct"
+                        } else "Incorrect"
                         println("$teacherAnswer - $result")
 
                         // TODO: ADD THE ANSWERS HERE
@@ -90,22 +97,40 @@ class QuestionServiceImpl(
             }
         }
 
+        println("THE STUDENTS TOTAL SCORE: ${totalMark.sum()}")
+        val remark = if (totalMark.sum() == question.passMark || totalMark.sum() > question.passMark) {
+            "pass"
+        } else {
+            "fail"
+        }
+
         if (answersDAO.isEmpty()) throw MyExceptions(Reasons.ANSWERS_NOT_SUBMITTED)
         val studentAnswers = StudentAnswersEntity(
             questionId = question.questionId!!,
             studentId = studentId,
             answers = answersDAO,
+            totalMarks = totalMark.sum()
         )
         studentAnswersRepository.save(studentAnswers)
 
         // update the answered question status to DONE
-        saveAnsweredQuestionStatus(question.questionId!!, student.id!!)
+        saveAnsweredQuestionStatus(question.questionId!!, student.id!!, remark)
 
         return ResponseEntity.ok(AnsweredQuestionsDAO.Builder()
             .status(200)
             .message("success")
             .questionId(question.questionId!!)
-            .answers(answersDAO)
+            .answers(answersDAO.map { answer ->
+                AnswersDAO
+                    .Builder()
+                    .id(answer.id)
+                    .text(answer.text)
+                    .type(answer.type)
+                    .options(answer.options)
+                    .build()
+            })
+            .totalScore(totalMark.sum())
+            .remarks(remark)
             .build())
     }
 
@@ -127,7 +152,7 @@ class QuestionServiceImpl(
     }
 
     // some helper functions
-    private fun saveAnsweredQuestionStatus(questionId: String, userId: String) {
+    private fun saveAnsweredQuestionStatus(questionId: String, userId: String, remark: String) {
         // find the answered question and update its status from ACTIVE to DONE
         val isAnsweredQuestion: Optional<AnsweredQuestionsEntity> = answeredQuestionsRepository.findByQuestionIdAndUserId(questionId, userId)
 
@@ -136,7 +161,8 @@ class QuestionServiceImpl(
         } else {
             val newAnsweredQuestionsEntity = AnsweredQuestionsEntity(
                 questionId = questionId,
-                userId = userId
+                userId = userId,
+                remark = remark
             )
             answeredQuestionsRepository.save(newAnsweredQuestionsEntity)
         }

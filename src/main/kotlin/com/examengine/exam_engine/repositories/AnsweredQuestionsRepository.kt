@@ -7,6 +7,10 @@ import java.util.Optional
 
 @Repository
 interface AnsweredQuestionsRepository : CrudRepository<AnsweredQuestionsEntity, String>{
+    /**
+     * @param questionId the question id
+     * @return AnsweredQuestionEntity
+     */
     fun findByQuestionIdAndUserId(questionId: String, userId: String): Optional<AnsweredQuestionsEntity>
 
     /**

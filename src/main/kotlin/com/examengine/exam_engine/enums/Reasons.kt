@@ -11,5 +11,6 @@ enum class Reasons(val label: String) {
     ANSWERS_NOT_SUBMITTED("Answers not submitted."),
     NO_ANSWERS_AVAILABLE("No answers found."),
     BAD_LOGIN_CREDENTIALS("Wrong email or password"),
-    ERROR_CREATING_QUESTION("An error occurred while creating your questions.")
+    ERROR_CREATING_QUESTION("An error occurred while creating your questions."),
+    QUESTION_ALREADY_ANSWERED("Question already answered")
 }
