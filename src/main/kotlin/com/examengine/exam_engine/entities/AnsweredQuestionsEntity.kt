@@ -10,5 +10,7 @@ data class AnsweredQuestionsEntity (
     var answerId: String? = null,
 
     var questionId: String,
-    var userId: String
+    var userId: String,
+
+    var remark: String
 )

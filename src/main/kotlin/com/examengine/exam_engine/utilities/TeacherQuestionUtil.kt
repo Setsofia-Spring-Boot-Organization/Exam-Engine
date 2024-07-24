@@ -17,6 +17,20 @@ class TeacherQuestionUtil(
     private val answeredQuestionsRepository: AnsweredQuestionsRepository
 ) {
     /**
+     * @param totalCount the total count of students
+     * @return ResponseEntity<QuestionsDAO>
+     */
+    fun showTotalCountResponse(totalCount: Int): ResponseEntity<QuestionsDAO> {
+        return ResponseEntity.ok(QuestionsDAO
+            .Builder()
+            .status(200)
+            .message("success")
+            .totalCounts(totalCount)
+            .build()
+        )
+    }
+
+    /**
      * @param questionId the question id as a parameter is used to fetch a single question from the database
      * @param teacherId the id of the teacher that is requesting the question
      * @return QuestionEntity
@@ -32,20 +46,6 @@ class TeacherQuestionUtil(
     }
 
     /**
-     * @param totalCount the total count of students
-     * @return ResponseEntity<QuestionsDAO>
-     */
-    fun showTotalCountResponse(totalCount: Int): ResponseEntity<QuestionsDAO> {
-        return ResponseEntity.ok(QuestionsDAO
-            .Builder()
-            .status(200)
-            .message("success")
-            .totalCounts(totalCount)
-            .build()
-        )
-    }
-
-    /**
      * @param questionId the question id as a parameter is used to fetch question from the database
      * @param teacherId the id of the teacher that is requesting the question
      * @return QuestionEntity
@@ -55,5 +55,24 @@ class TeacherQuestionUtil(
         val answeredQuestionsEntity: List<AnsweredQuestionsEntity> = answeredQuestionsRepository.findAnsweredQuestionsEntitiesByQuestionId(questionId)
 
         return answeredQuestionsEntity
+    }
+
+    /**
+     * @param questionId the question id as a parameter is used to fetch question from the database
+     * @param teacherId the id of the teacher that is requesting the question
+     * @return QuestionEntity
+     */
+    fun getPassOrFailedStudents(questionId: String, teacherId: String, remark: String): List<AnsweredQuestionsEntity> {
+        getSingleQuestion(questionId, teacherId) // verify that the question exists
+        val answeredQuestions: List<AnsweredQuestionsEntity> = answeredQuestionsRepository.findAnsweredQuestionsEntitiesByQuestionId(questionId)
+
+        val passStudents = ArrayList<AnsweredQuestionsEntity>()
+        for (student in answeredQuestions) {
+            if (student.remark == remark) {
+                passStudents.add(student)
+            }
+        }
+
+        return passStudents
     }
 }

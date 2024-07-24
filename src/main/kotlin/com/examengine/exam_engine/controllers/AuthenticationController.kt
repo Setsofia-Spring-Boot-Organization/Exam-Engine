@@ -60,21 +60,21 @@ class AuthenticationController(
         return teacherQuestionServiceImpl.createNewQuestions(teacherId, questionDetailsDTO)
     }
 
-    @GetMapping("/teacher/get/questions/{teacherId}")
+    @GetMapping("/teacher/questions/{teacherId}")
     fun getAllTeacherQuestions(
         @PathVariable teacherId: String
     ) : ResponseEntity<AllQuestionsDAO>{
         return teacherQuestionServiceImpl.getAllTeacherQuestions(teacherId)
     }
 
-    @GetMapping("/teacher/get/questions/{teacherId}/limited-details")
+    @GetMapping("/teacher/questions/{teacherId}/limited-details")
     fun getAllTeacherQuestionsWithLimitedResults(
         @PathVariable teacherId: String
     ) : ResponseEntity<AllQuestionsDAO>{
         return teacherQuestionServiceImpl.getAllTeacherQuestionsWithLimitedResults(teacherId)
     }
 
-    @GetMapping("/teacher/get/questions/{teacherId}/receivers/total/{questionId}")
+    @GetMapping("/teacher/questions/{teacherId}/receivers/total/{questionId}")
     fun getAllTeacherQuestionsReceiversCount(
         @PathVariable questionId: String,
         @PathVariable teacherId: String
@@ -82,12 +82,28 @@ class AuthenticationController(
         return teacherQuestionServiceImpl.getAllTeacherQuestionsReceiversCount(questionId, teacherId)
     }
 
-    @GetMapping("/teacher/get/questions/{teacherId}/receivers/done/{questionId}")
+    @GetMapping("/teacher/questions/{teacherId}/receivers/done/{questionId}")
     fun getAllTotalCountOfDoneStudents(
         @PathVariable questionId: String,
         @PathVariable teacherId: String
     ) : ResponseEntity<QuestionsDAO>{
         return teacherQuestionServiceImpl.getAllTotalCountOfDoneStudents(questionId, teacherId)
+    }
+
+    @GetMapping("/teacher/questions/{teacherId}/receivers/pass/{questionId}")
+    fun getAllTotalCountOfPassStudents(
+        @PathVariable questionId: String,
+        @PathVariable teacherId: String
+    ) : ResponseEntity<QuestionsDAO>{
+        return teacherQuestionServiceImpl.getAllTotalCountOfPassStudents(questionId, teacherId)
+    }
+
+    @GetMapping("/teacher/questions/{teacherId}/receivers/fail/{questionId}")
+    fun getAllTotalCountOfFailedStudents(
+        @PathVariable questionId: String,
+        @PathVariable teacherId: String
+    ) : ResponseEntity<QuestionsDAO>{
+        return teacherQuestionServiceImpl.getAllTotalCountOfFailedStudents(questionId, teacherId)
     }
 
 
