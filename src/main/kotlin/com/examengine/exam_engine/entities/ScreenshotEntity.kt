@@ -1,18 +1,18 @@
 package com.examengine.exam_engine.entities
 
-import com.examengine.exam_engine.dao.AnswersDAO
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
+import java.time.LocalDateTime
 
 @Document
-data class StudentAnswersEntity(
+data class ScreenshotEntity(
     @Id
-    var answerId: String? = null,
+    var screenshotId: String? = null,
+
+    var dateCreated: LocalDateTime,
 
     var questionId: String,
     var studentId: String,
 
-    var answers: List<AnswersDAO>,
-
-    var totalMarks: Int,
+    var screenshot: String
 )

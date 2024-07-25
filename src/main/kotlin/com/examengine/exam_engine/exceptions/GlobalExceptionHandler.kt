@@ -20,7 +20,6 @@ class GlobalExceptionHandler {
             Reasons.USER_NOT_FOUND,
             Reasons.ANSWERS_NOT_SUBMITTED,
             Reasons.BAD_LOGIN_CREDENTIALS,
-            Reasons.ERROR_CREATING_QUESTION,
             Reasons.INVALID_QUESTION_END_TIME,
             Reasons.INVALID_PASSWORD -> HttpStatus.BAD_REQUEST
 
@@ -31,6 +30,9 @@ class GlobalExceptionHandler {
 
             Reasons.NO_QUESTIONS_FOUND,
             Reasons.NO_ANSWERS_AVAILABLE -> HttpStatus.NOT_FOUND
+
+            Reasons.ERROR_CREATING_QUESTION,
+            Reasons.ERROR_SAVING_DATA -> HttpStatus.UNPROCESSABLE_ENTITY
         }
 
         val myExceptionPayload = MyExceptionPayload(

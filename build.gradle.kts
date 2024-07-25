@@ -2,8 +2,9 @@ plugins {
 	id("org.springframework.boot") version "3.3.0"
 	id("io.spring.dependency-management") version "1.1.5"
 	kotlin("plugin.jpa") version "1.9.24"
-	kotlin("jvm") version "1.9.24"
+	kotlin("jvm") version "1.9.24" // Update to match plugin versions
 	kotlin("plugin.spring") version "1.9.24"
+	kotlin("plugin.serialization") version "1.9.24" // Update to match plugin versions
 }
 
 group = "com.examengine"
@@ -31,9 +32,7 @@ repositories {
 }
 
 dependencies {
-	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-oauth2-client
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-client:3.3.1")
-
 	implementation("org.springframework.boot:spring-boot-starter-mail")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -49,18 +48,26 @@ dependencies {
 	testImplementation("org.springframework.security:spring-security-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-	// https://mvnrepository.com/artifact/io.jsonwebtoken/
 	implementation("io.jsonwebtoken:jjwt-api:0.12.5")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.5")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.5")
 	implementation("io.jsonwebtoken:jjwt:0.12.5")
 
-	// https://mvnrepository.com/artifact/io.ktor/ktor-client-core-jvm
 	implementation(platform("io.github.jan-tennert.supabase:bom:2.4.2"))
 	implementation("io.github.jan-tennert.supabase:realtime-kt")
 	implementation("io.github.jan-tennert.supabase:postgrest-kt:2.4.2")
 	implementation("io.github.jan-tennert.supabase:storage-kt:2.4.2")
 	implementation("io.github.jan-tennert.supabase:gotrue-kt:2.4.2")
+
+	implementation(kotlin("stdlib"))
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1") // Updated version
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.1") // Updated version
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.7.1") // Updated version
+	implementation("org.reactivestreams:reactive-streams:1.0.3")
+
+	// Ktor HTTP client dependencies
+	implementation("io.ktor:ktor-client-core:2.3.1")
+	implementation("io.ktor:ktor-client-cio:2.3.1")
 }
 
 kotlin {
