@@ -21,10 +21,12 @@ class GlobalExceptionHandler {
             Reasons.ANSWERS_NOT_SUBMITTED,
             Reasons.BAD_LOGIN_CREDENTIALS,
             Reasons.ERROR_CREATING_QUESTION,
+            Reasons.INVALID_QUESTION_END_TIME,
             Reasons.INVALID_PASSWORD -> HttpStatus.BAD_REQUEST
 
             Reasons.ONLY_ADMINS_CAN_PERFORM_THIS_ACTION,
             Reasons.QUESTION_ALREADY_ANSWERED,
+            Reasons.QUESTION_EXPIRED,
             Reasons.ONLY_STUDENTS_CAN_PERFORM_THIS_ACTION -> HttpStatus.FORBIDDEN
 
             Reasons.NO_QUESTIONS_FOUND,
