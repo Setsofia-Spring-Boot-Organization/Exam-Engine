@@ -10,7 +10,9 @@ enum class Reasons(val label: String) {
     ONLY_STUDENTS_CAN_PERFORM_THIS_ACTION("Only students are allowed to perform this action."),
     ANSWERS_NOT_SUBMITTED("Answers not submitted."),
     NO_ANSWERS_AVAILABLE("No answers found."),
-    BAD_LOGIN_CREDENTIALS("Wrong email or password"),
+    BAD_LOGIN_CREDENTIALS("Wrong email or password."),
     ERROR_CREATING_QUESTION("An error occurred while creating your questions."),
-    QUESTION_ALREADY_ANSWERED("Question already answered")
+    QUESTION_ALREADY_ANSWERED("Question already answered."),
+    QUESTION_EXPIRED("The question has expired."),
+    INVALID_QUESTION_END_TIME("The question end time cannot be in the past.")
 }

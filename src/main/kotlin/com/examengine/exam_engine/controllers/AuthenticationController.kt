@@ -109,19 +109,6 @@ class AuthenticationController(
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     @PostMapping("/save/image") // testing
     fun saveImageToDatabase(
         @RequestParam("imageFile") imageFile: MultipartFile,
@@ -140,6 +127,13 @@ class AuthenticationController(
             ResponseEntity("Failed to upload file", HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
+
+
+
+
+
+
+
 
 
 
