@@ -52,6 +52,8 @@ class QuestionUtil {
                 receivers = questionsDTO.questionReceivers,
                 receiversDone = null
         )
+
+        if (newQuestion.questionEndTime < LocalDateTime.now()) throw MyExceptions(Reasons.INVALID_QUESTION_END_TIME)
         return newQuestion
     }
 

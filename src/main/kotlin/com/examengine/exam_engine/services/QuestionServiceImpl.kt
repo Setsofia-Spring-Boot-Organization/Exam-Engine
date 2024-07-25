@@ -17,6 +17,7 @@ import com.examengine.exam_engine.utilities.StudentUtil
 import lombok.RequiredArgsConstructor
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import java.util.Optional
 
 @Service
@@ -63,6 +64,8 @@ class QuestionServiceImpl(
 
         val isQuestionAnswered = answeredQuestionsRepository.findByQuestionIdAndUserId(question.questionId!!, studentId)
         if (isQuestionAnswered.isPresent) throw MyExceptions(Reasons.QUESTION_ALREADY_ANSWERED)
+
+        if (question.questionEndTime < LocalDateTime.now()) throw MyExceptions(Reasons.QUESTION_EXPIRED)
 
         // Iterate over student answers
         for (studentAnswer in studentAnswersDTO.studentAnswers) {
