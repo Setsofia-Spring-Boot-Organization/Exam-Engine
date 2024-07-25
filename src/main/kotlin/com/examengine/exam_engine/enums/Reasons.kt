@@ -14,5 +14,6 @@ enum class Reasons(val label: String) {
     ERROR_CREATING_QUESTION("An error occurred while creating your questions."),
     QUESTION_ALREADY_ANSWERED("Question already answered."),
     QUESTION_EXPIRED("The question has expired."),
-    INVALID_QUESTION_END_TIME("The question end time cannot be in the past.")
+    INVALID_QUESTION_END_TIME("The question end time cannot be in the past."),
+    ERROR_SAVING_DATA("Error saving screenshot");
 }
