@@ -14,8 +14,7 @@ import java.time.LocalDateTime
 
 @Component
 @RequiredArgsConstructor
-class QuestionUtil(
-) {
+class QuestionUtil {
     fun iteratedQuestions(question: QuestionsEntity): QuestionsDAO {
         return QuestionsDAO.Builder()
             .questionId(question.questionId!!)
@@ -77,7 +76,8 @@ class QuestionUtil(
                     .passMark(question.passMark!!)
                     .questions(question.questions)
                     .receivers(question.receivers)
-                    .build())
+                    .build()
+            )
         }
 
         return AllQuestionsDAO(
@@ -88,10 +88,15 @@ class QuestionUtil(
     }
 
     fun getAllTeacherQuestionsWithLimitedResults(questionsDAO: List<QuestionsDAO>): AllQuestionsDAO {
-        return AllQuestionsDAO(
-            status = 200,
-            message = "success",
-            questions = questionsDAO.map { question ->
+        val questions = ArrayList<QuestionsDAO>()
+        for (question in questionsDAO) {
+            val questionStatus =  if (question.questionEndTime!! < LocalDateTime.now()) {
+                QuestionStatus.DONE
+            } else {
+                QuestionStatus.ACTIVE
+            }
+
+            questions.add(
                 QuestionsDAO
                     .Builder()
                     .questionId(question.questionId)
@@ -99,9 +104,15 @@ class QuestionUtil(
                     .questionStartTime(question.questionStartTime!!)
                     .questionEndTime(question.questionEndTime!!)
                     .passMark(question.passMark!!)
-                    .questionStatus(question.questionStatus!!)
+                    .questionStatus(questionStatus)
                     .build()
-            }
+            )
+        }
+
+        return AllQuestionsDAO(
+            status = 200,
+            message = "success",
+            questions = questions
         )
     }
 
