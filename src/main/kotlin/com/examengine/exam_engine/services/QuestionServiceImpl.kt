@@ -112,7 +112,7 @@ class QuestionServiceImpl(
             questionId = question.questionId!!,
             studentId = studentId,
             answers = answersDAO,
-            totalMarks = totalMark.sum()
+            totalMarks = totalMark.sum(),
         )
         studentAnswersRepository.save(studentAnswers)
 
