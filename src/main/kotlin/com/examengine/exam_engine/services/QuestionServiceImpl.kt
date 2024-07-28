@@ -11,7 +11,6 @@ import com.examengine.exam_engine.interfaces.QuestionsInterface
 import com.examengine.exam_engine.repositories.AnsweredQuestionsRepository
 import com.examengine.exam_engine.repositories.QuestionsRepository
 import com.examengine.exam_engine.repositories.StudentAnswersRepository
-import com.examengine.exam_engine.utilities.QuestionUtil
 import com.examengine.exam_engine.utilities.StudentQuestionUtil
 import com.examengine.exam_engine.utilities.StudentUtil
 import lombok.RequiredArgsConstructor
@@ -24,14 +23,12 @@ import java.util.Optional
 @RequiredArgsConstructor
 class QuestionServiceImpl(
     private var studentUtil: StudentUtil,
-    private var questionUtil: QuestionUtil,
     private var studentQuestionUtil: StudentQuestionUtil,
     private var questionsRepository: QuestionsRepository,
     private val studentAnswersRepository: StudentAnswersRepository,
     private val answeredQuestionsRepository: AnsweredQuestionsRepository
 ) : QuestionsInterface {
     override fun getAllStudentQuestions(studentId: String): ResponseEntity<AllQuestionsDAO> {
-
         val user = studentUtil.getStudent(studentId)
 
         val questions: List<QuestionsEntity> = questionsRepository.findQuestionsEntitiesByReceiversEmail(user.userEmail)
@@ -43,7 +40,7 @@ class QuestionServiceImpl(
             questionsDAO.add(questionDAO)
         }
 
-        return ResponseEntity.status(200).body(questionUtil.successQuestionRequestResponse(questionsDAO))
+        return ResponseEntity.status(200).body(studentQuestionUtil.successQuestionRequestResponse(questionsDAO))
     }
 
 

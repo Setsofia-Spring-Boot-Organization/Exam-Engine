@@ -67,21 +67,19 @@ class TeacherQuestionServiceImpl(
 
     override fun getAllTeacherQuestionsReceiversCount(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO> {
         val question: QuestionsEntity = teacherQuestionUtil.getSingleQuestion(questionId, teacherId)
-        return teacherQuestionUtil.showTotalCountResponse(question.receivers.size)
+
+        return teacherQuestionUtil.showTotalCountResponse(question)
     }
 
     override fun getAllTotalCountOfDoneStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO> {
-        val answeredQuestion = teacherQuestionUtil.getSubmittedAnswers(questionId, teacherId)
-        return teacherQuestionUtil.showTotalCountResponse(answeredQuestion.size)
+        return teacherQuestionUtil.getSubmittedAnswers(questionId, teacherId)
     }
 
     override fun getAllTotalCountOfPassStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO> {
-        val passStudents = teacherQuestionUtil.getPassOrFailedStudents(questionId, teacherId, "pass")
-        return teacherQuestionUtil.showTotalCountResponse(passStudents.size)
+        return teacherQuestionUtil.getPassOrFailedStudents(questionId, teacherId, "pass")
     }
 
     override fun getAllTotalCountOfFailedStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO> {
-        val passStudents = teacherQuestionUtil.getPassOrFailedStudents(questionId, teacherId, "fail")
-        return teacherQuestionUtil.showTotalCountResponse(passStudents.size)
+        return teacherQuestionUtil.getPassOrFailedStudents(questionId, teacherId, "fail")
     }
 }

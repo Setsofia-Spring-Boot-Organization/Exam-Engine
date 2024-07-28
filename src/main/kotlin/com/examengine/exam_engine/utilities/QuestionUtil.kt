@@ -9,7 +9,6 @@ import com.examengine.exam_engine.enums.Reasons
 import com.examengine.exam_engine.exceptions.MyExceptions
 import lombok.RequiredArgsConstructor
 import org.springframework.stereotype.Component
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Component
@@ -41,7 +40,7 @@ class QuestionUtil {
 
         val newQuestion = QuestionsEntity(
                 creator = teacherId,
-                dateCreated = LocalDate.now(),
+                dateCreated = LocalDateTime.now(),
                 questionStatus = QuestionStatus.ACTIVE,
                 questionTitle = questionsDTO.questionTitle,
                 questionInstruction = questionsDTO.questionInstruction,
@@ -49,8 +48,7 @@ class QuestionUtil {
                 questionEndTime = questionsDTO.questionEndTime!!,
                 question = questionsDTO.question,
                 passMark = questionsDTO.passMark,
-                receivers = questionsDTO.questionReceivers,
-                receiversDone = null
+                receivers = questionsDTO.questionReceivers
         )
 
         if (newQuestion.questionEndTime < LocalDateTime.now()) throw MyExceptions(Reasons.INVALID_QUESTION_END_TIME)
@@ -75,12 +73,14 @@ class QuestionUtil {
                     .questionStatus(questionStatus)
                     .questionStartTime(question.questionStartTime!!)
                     .questionEndTime(question.questionEndTime!!)
-                    .passMark(question.passMark!!)
                     .questions(question.questions)
                     .receivers(question.receivers)
+                    .passMark(question.passMark!!)
                     .build()
             )
         }
+
+        println(questions)
 
         return AllQuestionsDAO(
             status = 200,
