@@ -21,12 +21,4 @@ class StudentUtil (
         throw MyExceptions(Reasons.ONLY_STUDENTS_CAN_PERFORM_THIS_ACTION)
     }
 
-    fun getStudentByEmail(email: String) : Users {
-        val user = userRepository.findByUserEmail(email)
-        if (user.isPresent && user.get().role == UserRoles.STUDENT.name) {
-            return user.get()
-        }
-
-        throw MyExceptions(Reasons.ONLY_STUDENTS_CAN_PERFORM_THIS_ACTION)
-    }
 }

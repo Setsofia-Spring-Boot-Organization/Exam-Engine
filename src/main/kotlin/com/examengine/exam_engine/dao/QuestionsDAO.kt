@@ -1,10 +1,8 @@
 package com.examengine.exam_engine.dao
 
 import com.examengine.exam_engine.dto.QuestionsDTO
-import com.examengine.exam_engine.entities.Users
 import com.examengine.exam_engine.enums.QuestionStatus
 import com.fasterxml.jackson.annotation.JsonInclude
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)

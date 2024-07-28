@@ -19,10 +19,7 @@ class TeacherQuestionUtil(
     private val answeredQuestionsRepository: AnsweredQuestionsRepository,
     private val userRepository: UserRepository
 ) {
-    /**
-     * @param totalCount the total count of students
-     * @return ResponseEntity<QuestionsDAO>
-     */
+
     fun showTotalCountResponse(question: QuestionsEntity): ResponseEntity<QuestionsDAO> {
         val receivers = ArrayList<UserDAO>()
         for (receiver in question.receivers) {
