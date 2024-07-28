@@ -4,11 +4,13 @@ import com.examengine.exam_engine.dao.AllQuestionsDAO
 import com.examengine.exam_engine.dao.QuestionsDAO
 import com.examengine.exam_engine.dto.QuestionDetailsDTO
 import com.examengine.exam_engine.entities.QuestionsEntity
+import com.examengine.exam_engine.entities.Users
 import com.examengine.exam_engine.enums.Reasons
 import com.examengine.exam_engine.exceptions.MyExceptions
 import com.examengine.exam_engine.interfaces.TeacherQuestionsInterface
 import com.examengine.exam_engine.repositories.QuestionsRepository
 import com.examengine.exam_engine.utilities.QuestionUtil
+import com.examengine.exam_engine.utilities.StudentUtil
 import com.examengine.exam_engine.utilities.TeacherQuestionUtil
 import com.examengine.exam_engine.utilities.TeacherUtil
 import org.springframework.http.ResponseEntity
@@ -19,7 +21,8 @@ class TeacherQuestionServiceImpl(
     private var teacherUtil: TeacherUtil,
     private var questionUtil: QuestionUtil,
     private var questionsRepository: QuestionsRepository,
-    private val teacherQuestionUtil: TeacherQuestionUtil
+    private val teacherQuestionUtil: TeacherQuestionUtil,
+    private val studentUtil: StudentUtil
 ): TeacherQuestionsInterface {
 
     // TODO: add total marks to the response
@@ -67,21 +70,19 @@ class TeacherQuestionServiceImpl(
 
     override fun getAllTeacherQuestionsReceiversCount(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO> {
         val question: QuestionsEntity = teacherQuestionUtil.getSingleQuestion(questionId, teacherId)
-        return teacherQuestionUtil.showTotalCountResponse(question.receivers.size)
+
+        return teacherQuestionUtil.showTotalCountResponse(question)
     }
 
     override fun getAllTotalCountOfDoneStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO> {
-        val answeredQuestion = teacherQuestionUtil.getSubmittedAnswers(questionId, teacherId)
-        return teacherQuestionUtil.showTotalCountResponse(answeredQuestion.size)
+        return teacherQuestionUtil.getSubmittedAnswers(questionId, teacherId)
     }
 
     override fun getAllTotalCountOfPassStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO> {
-        val passStudents = teacherQuestionUtil.getPassOrFailedStudents(questionId, teacherId, "pass")
-        return teacherQuestionUtil.showTotalCountResponse(passStudents.size)
+        return teacherQuestionUtil.getPassOrFailedStudents(questionId, teacherId, "pass")
     }
 
     override fun getAllTotalCountOfFailedStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO> {
-        val passStudents = teacherQuestionUtil.getPassOrFailedStudents(questionId, teacherId, "fail")
-        return teacherQuestionUtil.showTotalCountResponse(passStudents.size)
+        return teacherQuestionUtil.getPassOrFailedStudents(questionId, teacherId, "fail")
     }
 }
