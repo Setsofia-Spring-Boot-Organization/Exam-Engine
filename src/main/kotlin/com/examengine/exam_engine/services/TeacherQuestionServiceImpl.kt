@@ -4,13 +4,11 @@ import com.examengine.exam_engine.dao.AllQuestionsDAO
 import com.examengine.exam_engine.dao.QuestionsDAO
 import com.examengine.exam_engine.dto.QuestionDetailsDTO
 import com.examengine.exam_engine.entities.QuestionsEntity
-import com.examengine.exam_engine.entities.Users
 import com.examengine.exam_engine.enums.Reasons
 import com.examengine.exam_engine.exceptions.MyExceptions
 import com.examengine.exam_engine.interfaces.TeacherQuestionsInterface
 import com.examengine.exam_engine.repositories.QuestionsRepository
 import com.examengine.exam_engine.utilities.QuestionUtil
-import com.examengine.exam_engine.utilities.StudentUtil
 import com.examengine.exam_engine.utilities.TeacherQuestionUtil
 import com.examengine.exam_engine.utilities.TeacherUtil
 import org.springframework.http.ResponseEntity
@@ -21,8 +19,7 @@ class TeacherQuestionServiceImpl(
     private var teacherUtil: TeacherUtil,
     private var questionUtil: QuestionUtil,
     private var questionsRepository: QuestionsRepository,
-    private val teacherQuestionUtil: TeacherQuestionUtil,
-    private val studentUtil: StudentUtil
+    private val teacherQuestionUtil: TeacherQuestionUtil
 ): TeacherQuestionsInterface {
 
     // TODO: add total marks to the response
