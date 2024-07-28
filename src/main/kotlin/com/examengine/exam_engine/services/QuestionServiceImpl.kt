@@ -10,6 +10,7 @@ import com.examengine.exam_engine.exceptions.MyExceptions
 import com.examengine.exam_engine.interfaces.QuestionsInterface
 import com.examengine.exam_engine.repositories.AnsweredQuestionsRepository
 import com.examengine.exam_engine.repositories.QuestionsRepository
+import com.examengine.exam_engine.repositories.ScreenshotEntityRepository
 import com.examengine.exam_engine.repositories.StudentAnswersRepository
 import com.examengine.exam_engine.utilities.QuestionUtil
 import com.examengine.exam_engine.utilities.StudentQuestionUtil
@@ -28,9 +29,15 @@ class QuestionServiceImpl(
     private var studentQuestionUtil: StudentQuestionUtil,
     private var questionsRepository: QuestionsRepository,
     private val studentAnswersRepository: StudentAnswersRepository,
-    private val answeredQuestionsRepository: AnsweredQuestionsRepository
+    private val answeredQuestionsRepository: AnsweredQuestionsRepository,
+    private val screenshotEntityRepository: ScreenshotEntityRepository
 ) : QuestionsInterface {
     override fun getAllStudentQuestions(studentId: String): ResponseEntity<AllQuestionsDAO> {
+//        questionsRepository.deleteAll(questionsRepository.findAll())
+//        answeredQuestionsRepository.deleteAll(answeredQuestionsRepository.findAll())
+//        studentAnswersRepository.deleteAll(studentAnswersRepository.findAll())
+//        screenshotEntityRepository.deleteAll(screenshotEntityRepository.findAll())
+
 
         val user = studentUtil.getStudent(studentId)
 
@@ -43,7 +50,7 @@ class QuestionServiceImpl(
             questionsDAO.add(questionDAO)
         }
 
-        return ResponseEntity.status(200).body(questionUtil.successQuestionRequestResponse(questionsDAO))
+        return ResponseEntity.status(200).body(studentQuestionUtil.successQuestionRequestResponse(questionsDAO))
     }
 
 
