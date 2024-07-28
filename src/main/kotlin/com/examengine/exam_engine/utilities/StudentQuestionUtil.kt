@@ -78,6 +78,7 @@ class StudentQuestionUtil(
                     .questionId(question.questionId)
                     .dateCreated(question.dateCreated!!)
                     .questionTitle(question.questionTitle)
+                    .questionInstructions(question.questionInstructions)
                     .questionStatus(questionStatus)
                     .questionStartTime(question.questionStartTime!!)
                     .questionEndTime(question.questionEndTime!!)
