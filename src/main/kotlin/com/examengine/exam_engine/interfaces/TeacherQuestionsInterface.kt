@@ -1,6 +1,7 @@
 package com.examengine.exam_engine.interfaces
 
 import com.examengine.exam_engine.dao.AllQuestionsDAO
+import com.examengine.exam_engine.dao.OverviewDAO
 import com.examengine.exam_engine.dao.QuestionsDAO
 import com.examengine.exam_engine.dto.QuestionDetailsDTO
 import org.springframework.http.ResponseEntity
@@ -52,4 +53,13 @@ interface TeacherQuestionsInterface {
      * @return the total count of students that failed an exam
      */
     fun getAllTotalCountOfFailedStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO>
+
+    /**
+     * This method retrieves the overview of a specific question by its ID and the ID of the teacher who created it.
+     *
+     * @param questionId the ID of the question to retrieve the overview for
+     * @param teacherId the ID of the teacher who created the question
+     * @return a ResponseEntity containing the OverviewDAO object with the question's overview details
+     */
+    fun getQuestionOverview(questionId: String, teacherId: String): ResponseEntity<OverviewDAO>
 }

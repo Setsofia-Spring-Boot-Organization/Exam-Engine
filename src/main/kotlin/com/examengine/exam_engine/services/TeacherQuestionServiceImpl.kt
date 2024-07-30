@@ -1,6 +1,7 @@
 package com.examengine.exam_engine.services
 
 import com.examengine.exam_engine.dao.AllQuestionsDAO
+import com.examengine.exam_engine.dao.OverviewDAO
 import com.examengine.exam_engine.dao.QuestionsDAO
 import com.examengine.exam_engine.dto.QuestionDetailsDTO
 import com.examengine.exam_engine.entities.QuestionsEntity
@@ -81,5 +82,27 @@ class TeacherQuestionServiceImpl(
 
     override fun getAllTotalCountOfFailedStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO> {
         return teacherQuestionUtil.getPassOrFailedStudents(questionId, teacherId, "fail")
+    }
+
+    override fun getQuestionOverview(questionId: String, teacherId: String): ResponseEntity<OverviewDAO> {
+        val totalStudents = getAllTeacherQuestionsReceiversCount(questionId, teacherId)
+        val passStudents = getAllTotalCountOfDoneStudents(questionId, teacherId)
+        val failStudents = getAllTotalCountOfPassStudents(questionId, teacherId)
+        val totalReceived = getAllTotalCountOfFailedStudents(questionId, teacherId)
+
+        println(totalStudents)
+        println(passStudents)
+        println(failStudents)
+        println(totalReceived)
+
+        return ResponseEntity.ok(OverviewDAO
+            .Builder()
+            .status(200)
+            .message("success")
+            .totalStudents(totalStudents.body!!.totalCounts!!)
+            .passStudents(passStudents.body!!.totalCounts!!)
+            .failedStudents(failStudents.body!!.totalCounts!!)
+            .totalReceived(totalReceived.body!!.totalCounts!!)
+            .build())
     }
 }

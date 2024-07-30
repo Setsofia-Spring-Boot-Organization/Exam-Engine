@@ -102,6 +102,14 @@ class AuthenticationController(
         return teacherQuestionServiceImpl.getAllTotalCountOfFailedStudents(questionId, teacherId)
     }
 
+    @GetMapping("/teacher/questions/{teacherId}/overview/{questionId}")
+    fun getQuestionOverview(
+        @PathVariable questionId: String,
+        @PathVariable teacherId: String
+    ) : ResponseEntity<OverviewDAO>{
+        return teacherQuestionServiceImpl.getQuestionOverview(questionId, teacherId)
+    }
+
     @PostMapping("/save/image") // testing
     suspend fun saveImageToDatabase(
         @RequestParam("imageFile") imageFile: List<MultipartFile>,
