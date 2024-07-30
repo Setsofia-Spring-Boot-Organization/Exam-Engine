@@ -23,7 +23,6 @@ class TeacherQuestionServiceImpl(
     private val teacherQuestionUtil: TeacherQuestionUtil
 ): TeacherQuestionsInterface {
 
-    // TODO: add total marks to the response
     override fun createNewQuestions(teacherId: String, questionsDTO: QuestionDetailsDTO): ResponseEntity<QuestionsDAO> {
         val user = teacherUtil.getTeacher(teacherId)
         val newQuestion = user.id?.let { questionUtil.createQuestion(it, questionsDTO) }
@@ -86,23 +85,20 @@ class TeacherQuestionServiceImpl(
 
     override fun getQuestionOverview(questionId: String, teacherId: String): ResponseEntity<OverviewDAO> {
         val totalStudents = getAllTeacherQuestionsReceiversCount(questionId, teacherId)
-        val passStudents = getAllTotalCountOfDoneStudents(questionId, teacherId)
-        val failStudents = getAllTotalCountOfPassStudents(questionId, teacherId)
-        val totalReceived = getAllTotalCountOfFailedStudents(questionId, teacherId)
-
-        println(totalStudents)
-        println(passStudents)
-        println(failStudents)
-        println(totalReceived)
+        val completedStudents = getAllTotalCountOfDoneStudents(questionId, teacherId)
+        val passStudents = getAllTotalCountOfPassStudents(questionId, teacherId)
+        val failedStudents = getAllTotalCountOfFailedStudents(questionId, teacherId)
+        val absentStudents = teacherQuestionUtil.getAbsentStudents(questionId, teacherId)
 
         return ResponseEntity.ok(OverviewDAO
             .Builder()
             .status(200)
             .message("success")
             .totalStudents(totalStudents.body!!.totalCounts!!)
+            .completedStudents(completedStudents.body!!.totalCounts!!)
             .passStudents(passStudents.body!!.totalCounts!!)
-            .failedStudents(failStudents.body!!.totalCounts!!)
-            .totalReceived(totalReceived.body!!.totalCounts!!)
+            .failedStudents(failedStudents.body!!.totalCounts!!)
+            .absentStudents(absentStudents.body!!.totalCounts!!)
             .build())
     }
 }

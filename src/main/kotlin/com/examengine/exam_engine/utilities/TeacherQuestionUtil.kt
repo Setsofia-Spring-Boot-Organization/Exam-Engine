@@ -11,7 +11,9 @@ import com.examengine.exam_engine.repositories.QuestionsRepository
 import com.examengine.exam_engine.repositories.UserRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 import java.util.*
+import kotlin.collections.ArrayList
 
 @Component
 class TeacherQuestionUtil(
@@ -140,5 +142,47 @@ class TeacherQuestionUtil(
             .students(receivers)
             .build()
         )
+    }
+
+    fun getAbsentStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO>{
+        val missedUsers = getMissedUsers(questionId, teacherId)
+
+        return ResponseEntity.ok(QuestionsDAO
+            .Builder()
+            .status(200)
+            .message("success")
+            .totalCounts(missedUsers.size)
+            .build()
+        )
+    }
+
+    private fun getReceivers(questionId: String, teacherId: String): List<String> {
+        val question = getSingleQuestion(questionId, teacherId)
+        val receiverIds = ArrayList<String>()
+
+        if (question.questionEndTime < LocalDateTime.now()) {
+            for (receiver in question.receivers) {
+                val user = userRepository.findByUserEmail(receiver)
+                if (user.isPresent) {
+                    receiverIds.add(user.get().id!!)
+                }
+            }
+        }
+
+        return receiverIds
+    }
+
+    private fun getMissedUsers(questionId: String, teacherId: String): List<String> {
+        val missedUsers = ArrayList<String>()
+        val receiverIds = getReceivers(questionId, teacherId)
+
+        for (userId in receiverIds) {
+            val answer = answeredQuestionsRepository.findByQuestionIdAndUserId(questionId, userId)
+            if (!answer.isPresent) {
+                missedUsers.add(userId)
+            }
+        }
+
+        return missedUsers
     }
 }
