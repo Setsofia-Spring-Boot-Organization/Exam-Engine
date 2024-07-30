@@ -83,6 +83,10 @@ class TeacherQuestionServiceImpl(
         return teacherQuestionUtil.getPassOrFailedStudents(questionId, teacherId, "fail")
     }
 
+    override fun getAllTotalCountOfAbsentStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO> {
+        return teacherQuestionUtil.getAbsentStudents(questionId, teacherId)
+    }
+
     override fun getQuestionOverview(questionId: String, teacherId: String): ResponseEntity<OverviewDAO> {
         val totalStudents = getAllTeacherQuestionsReceiversCount(questionId, teacherId)
         val completedStudents = getAllTotalCountOfDoneStudents(questionId, teacherId)

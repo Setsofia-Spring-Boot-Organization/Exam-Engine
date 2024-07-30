@@ -102,6 +102,14 @@ class AuthenticationController(
         return teacherQuestionServiceImpl.getAllTotalCountOfFailedStudents(questionId, teacherId)
     }
 
+    @GetMapping("/teacher/questions/{teacherId}/receivers/absent/{questionId}")
+    fun getAllTotalCountOfAbsentStudents(
+        @PathVariable questionId: String,
+        @PathVariable teacherId: String
+    ) : ResponseEntity<QuestionsDAO>{
+        return teacherQuestionServiceImpl.getAllTotalCountOfAbsentStudents(questionId, teacherId)
+    }
+
     @GetMapping("/teacher/questions/{teacherId}/overview/{questionId}")
     fun getQuestionOverview(
         @PathVariable questionId: String,
