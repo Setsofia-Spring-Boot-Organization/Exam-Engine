@@ -11,7 +11,9 @@ import com.examengine.exam_engine.repositories.QuestionsRepository
 import com.examengine.exam_engine.repositories.UserRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 import java.util.*
+import kotlin.collections.ArrayList
 
 @Component
 class TeacherQuestionUtil(
@@ -140,5 +142,68 @@ class TeacherQuestionUtil(
             .students(receivers)
             .build()
         )
+    }
+
+    /**
+     * This method retrieves the list of students who have missed answering a specific question.
+     *
+     * @param questionId the ID of the question
+     * @param teacherId the ID of the teacher who created the question
+     * @return a ResponseEntity containing the QuestionsDAO object with the status, message, and total count of missed users
+     */
+    fun getAbsentStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO>{
+        val missedUsers = getMissedUsers(questionId, teacherId)
+
+        return ResponseEntity.ok(QuestionsDAO
+            .Builder()
+            .status(200)
+            .message("success")
+            .totalCounts(missedUsers.size)
+            .build()
+        )
+    }
+
+    /**
+     * This method retrieves the list of receiver IDs for a specific question if the question has ended.
+     *
+     * @param questionId the ID of the question
+     * @param teacherId the ID of the teacher who created the question
+     * @return a list of receiver IDs for the question
+     */
+    private fun getReceivers(questionId: String, teacherId: String): List<String> {
+        val question = getSingleQuestion(questionId, teacherId)
+        val receiverIds = ArrayList<String>()
+
+        if (question.questionEndTime < LocalDateTime.now()) {
+            for (receiver in question.receivers) {
+                val user = userRepository.findByUserEmail(receiver)
+                if (user.isPresent) {
+                    receiverIds.add(user.get().id!!)
+                }
+            }
+        }
+
+        return receiverIds
+    }
+
+    /**
+     * This method retrieves the list of user IDs who have missed answering a specific question.
+     *
+     * @param questionId the ID of the question
+     * @param teacherId the ID of the teacher who created the question
+     * @return a list of user IDs who have missed answering the question
+     */
+    private fun getMissedUsers(questionId: String, teacherId: String): List<String> {
+        val missedUsers = ArrayList<String>()
+        val receiverIds = getReceivers(questionId, teacherId)
+
+        for (userId in receiverIds) {
+            val answer = answeredQuestionsRepository.findByQuestionIdAndUserId(questionId, userId)
+            if (!answer.isPresent) {
+                missedUsers.add(userId)
+            }
+        }
+
+        return missedUsers
     }
 }

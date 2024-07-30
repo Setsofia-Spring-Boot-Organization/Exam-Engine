@@ -1,6 +1,7 @@
 package com.examengine.exam_engine.services
 
 import com.examengine.exam_engine.dao.AllQuestionsDAO
+import com.examengine.exam_engine.dao.OverviewDAO
 import com.examengine.exam_engine.dao.QuestionsDAO
 import com.examengine.exam_engine.dto.QuestionDetailsDTO
 import com.examengine.exam_engine.entities.QuestionsEntity
@@ -22,7 +23,6 @@ class TeacherQuestionServiceImpl(
     private val teacherQuestionUtil: TeacherQuestionUtil
 ): TeacherQuestionsInterface {
 
-    // TODO: add total marks to the response
     override fun createNewQuestions(teacherId: String, questionsDTO: QuestionDetailsDTO): ResponseEntity<QuestionsDAO> {
         val user = teacherUtil.getTeacher(teacherId)
         val newQuestion = user.id?.let { questionUtil.createQuestion(it, questionsDTO) }
@@ -81,5 +81,24 @@ class TeacherQuestionServiceImpl(
 
     override fun getAllTotalCountOfFailedStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO> {
         return teacherQuestionUtil.getPassOrFailedStudents(questionId, teacherId, "fail")
+    }
+
+    override fun getQuestionOverview(questionId: String, teacherId: String): ResponseEntity<OverviewDAO> {
+        val totalStudents = getAllTeacherQuestionsReceiversCount(questionId, teacherId)
+        val completedStudents = getAllTotalCountOfDoneStudents(questionId, teacherId)
+        val passStudents = getAllTotalCountOfPassStudents(questionId, teacherId)
+        val failedStudents = getAllTotalCountOfFailedStudents(questionId, teacherId)
+        val absentStudents = teacherQuestionUtil.getAbsentStudents(questionId, teacherId)
+
+        return ResponseEntity.ok(OverviewDAO
+            .Builder()
+            .status(200)
+            .message("success")
+            .totalStudents(totalStudents.body!!.totalCounts!!)
+            .completedStudents(completedStudents.body!!.totalCounts!!)
+            .passStudents(passStudents.body!!.totalCounts!!)
+            .failedStudents(failedStudents.body!!.totalCounts!!)
+            .absentStudents(absentStudents.body!!.totalCounts!!)
+            .build())
     }
 }
