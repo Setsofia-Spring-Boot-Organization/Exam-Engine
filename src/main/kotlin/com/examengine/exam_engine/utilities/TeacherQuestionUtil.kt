@@ -144,6 +144,13 @@ class TeacherQuestionUtil(
         )
     }
 
+    /**
+     * This method retrieves the list of students who have missed answering a specific question.
+     *
+     * @param questionId the ID of the question
+     * @param teacherId the ID of the teacher who created the question
+     * @return a ResponseEntity containing the QuestionsDAO object with the status, message, and total count of missed users
+     */
     fun getAbsentStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO>{
         val missedUsers = getMissedUsers(questionId, teacherId)
 
@@ -156,6 +163,13 @@ class TeacherQuestionUtil(
         )
     }
 
+    /**
+     * This method retrieves the list of receiver IDs for a specific question if the question has ended.
+     *
+     * @param questionId the ID of the question
+     * @param teacherId the ID of the teacher who created the question
+     * @return a list of receiver IDs for the question
+     */
     private fun getReceivers(questionId: String, teacherId: String): List<String> {
         val question = getSingleQuestion(questionId, teacherId)
         val receiverIds = ArrayList<String>()
@@ -172,6 +186,13 @@ class TeacherQuestionUtil(
         return receiverIds
     }
 
+    /**
+     * This method retrieves the list of user IDs who have missed answering a specific question.
+     *
+     * @param questionId the ID of the question
+     * @param teacherId the ID of the teacher who created the question
+     * @return a list of user IDs who have missed answering the question
+     */
     private fun getMissedUsers(questionId: String, teacherId: String): List<String> {
         val missedUsers = ArrayList<String>()
         val receiverIds = getReceivers(questionId, teacherId)
