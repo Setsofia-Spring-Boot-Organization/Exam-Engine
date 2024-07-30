@@ -153,12 +153,30 @@ class TeacherQuestionUtil(
      */
     fun getAbsentStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO>{
         val missedUsers = getMissedUsers(questionId, teacherId)
+        val absentStudents = ArrayList<UserDAO>()
+
+        for (userId in missedUsers) {
+            val user = userRepository.findById(userId)
+            if (user.isPresent) {
+                val student = user.get()
+                val pStudent = UserDAO
+                    .Builder()
+                    .name(student.name)
+                    .id(student.id!!)
+                    .gender(student.gender)
+                    .email(student.userEmail)
+                    .dateCreated(student.dateAdded)
+                    .build()
+                absentStudents.add(pStudent)
+            }
+        }
 
         return ResponseEntity.ok(QuestionsDAO
             .Builder()
             .status(200)
             .message("success")
-            .totalCounts(missedUsers.size)
+            .totalCounts(absentStudents.size)
+            .students(absentStudents)
             .build()
         )
     }

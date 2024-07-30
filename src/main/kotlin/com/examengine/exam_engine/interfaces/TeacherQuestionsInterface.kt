@@ -62,4 +62,13 @@ interface TeacherQuestionsInterface {
      * @return a ResponseEntity containing the OverviewDAO object with the question's overview details
      */
     fun getQuestionOverview(questionId: String, teacherId: String): ResponseEntity<OverviewDAO>
+
+    /**
+     * This method retrieves the total count of all students who have missed answering a specific question.
+     *
+     * @param questionId the ID of the question
+     * @param teacherId the ID of the teacher who created the question
+     * @return a ResponseEntity containing the QuestionsDAO object with the status, message, and total count of missed users
+     */
+    fun getAllTotalCountOfAbsentStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO>
 }
