@@ -9,6 +9,7 @@ data class UserDAO(
     var message: String,
     var name: String,
     var id: String,
+    var questionId: String,
     var gender: String,
     var email: String,
     var contact: String,
@@ -21,6 +22,7 @@ data class UserDAO(
         private var dateCreated: LocalDateTime? = null
         private var name: String = ""
         private var id: String = ""
+        private var questionId: String = ""
         private var gender: String = ""
         private var email: String = ""
         private var contact: String = ""
@@ -30,12 +32,13 @@ data class UserDAO(
         fun dateCreated(dateCreated: LocalDateTime) = apply { this.dateCreated = dateCreated }
         fun name(name: String) = apply { this.name = name }
         fun id(id: String) = apply { this.id = id }
+        fun questionId(questionId: String) = apply { this.questionId = questionId }
         fun gender(gender: String) = apply { this.gender = gender }
         fun email(email: String) = apply { this.email = email }
         fun contact(contact: String) = apply { this.contact = contact }
 
         fun build() = UserDAO(
-            status, message, name, id, gender, email, contact, dateCreated
+            status, message, name, id, questionId, gender, email, contact, dateCreated
         )
     }
 }
