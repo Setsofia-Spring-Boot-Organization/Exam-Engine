@@ -17,49 +17,36 @@ class StudentQuestionUtil(
 ) {
     fun iteratedStudentQuestions(question: QuestionsEntity, studentId: String): QuestionsDAO {
         val answeredQuestionsEntity: Optional<AnsweredQuestionsEntity> = answeredQuestionsRepository.findByQuestionIdAndUserId(question.questionId!!, studentId)
-        if (answeredQuestionsEntity.isPresent || question.questionEndTime < LocalDateTime.now()) {
-            return QuestionsDAO.Builder()
-                .questionId(question.questionId!!)
-                .questionStatus(QuestionStatus.DONE)
-                .dateCreated(question.dateCreated)
-                .questionTitle(question.questionTitle)
-                .questionInstructions(question.questionInstruction)
-                .questionStartTime(question.questionStartTime)
-                .questionEndTime(question.questionEndTime)
-                .studentQuestions(question.question.map { studentQuestion ->
-                    StudentQuestionsDAO
-                        .Builder()
-                        .id(studentQuestion.id)
-                        .text(studentQuestion.text)
-                        .type(studentQuestion.type)
-                        .score(studentQuestion.score)
-                        .options(studentQuestion.options)
-                        .build()
-
-                })
-                .build()
+        return if (answeredQuestionsEntity.isPresent) {
+            responseDAO(question, QuestionStatus.DONE)
+        } else if (!answeredQuestionsEntity.isPresent && question.questionEndTime < LocalDateTime.now()) {
+            responseDAO(question, QuestionStatus.EXPIRED)
         } else {
-            return QuestionsDAO.Builder()
-                .questionId(question.questionId!!)
-                .questionStatus(QuestionStatus.PENDING)
-                .dateCreated(question.dateCreated)
-                .questionTitle(question.questionTitle)
-                .questionInstructions(question.questionInstruction)
-                .questionStartTime(question.questionStartTime)
-                .questionEndTime(question.questionEndTime)
-                .studentQuestions(question.question.map { studentQuestion ->
-                    StudentQuestionsDAO
-                        .Builder()
-                        .id(studentQuestion.id)
-                        .text(studentQuestion.text)
-                        .type(studentQuestion.type)
-                        .score(studentQuestion.score)
-                        .options(studentQuestion.options)
-                        .build()
-
-                })
-                .build()
+            responseDAO(question, QuestionStatus.PENDING)
         }
+    }
+
+    private fun responseDAO(question: QuestionsEntity, questionStatus: QuestionStatus): QuestionsDAO {
+        return QuestionsDAO.Builder()
+            .questionId(question.questionId!!)
+            .questionStatus(questionStatus)
+            .dateCreated(question.dateCreated)
+            .questionTitle(question.questionTitle)
+            .questionInstructions(question.questionInstruction)
+            .questionStartTime(question.questionStartTime)
+            .questionEndTime(question.questionEndTime)
+            .studentQuestions(question.question.map { studentQuestion ->
+                StudentQuestionsDAO
+                    .Builder()
+                    .id(studentQuestion.id)
+                    .text(studentQuestion.text)
+                    .type(studentQuestion.type)
+                    .score(studentQuestion.score)
+                    .options(studentQuestion.options)
+                    .build()
+
+            })
+            .build()
     }
 
     fun successQuestionRequestResponse(questionsDAO: List<QuestionsDAO>): AllQuestionsDAO {
