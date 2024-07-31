@@ -1,15 +1,14 @@
 package com.examengine.exam_engine.services
 
-import com.examengine.exam_engine.dao.AllQuestionsDAO
-import com.examengine.exam_engine.dao.ExamNotificationDetails
-import com.examengine.exam_engine.dao.OverviewDAO
-import com.examengine.exam_engine.dao.QuestionsDAO
+import com.examengine.exam_engine.dao.*
 import com.examengine.exam_engine.dto.QuestionDetailsDTO
 import com.examengine.exam_engine.entities.QuestionsEntity
+import com.examengine.exam_engine.entities.SnapshotEntity
 import com.examengine.exam_engine.enums.Reasons
 import com.examengine.exam_engine.exceptions.MyExceptions
 import com.examengine.exam_engine.interfaces.TeacherQuestionsInterface
 import com.examengine.exam_engine.repositories.QuestionsRepository
+import com.examengine.exam_engine.repositories.SnapshotEntityRepository
 import com.examengine.exam_engine.utilities.*
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -23,7 +22,8 @@ class TeacherQuestionServiceImpl(
     private val teacherQuestionUtil: TeacherQuestionUtil,
     private val emailService: EmailService,
     private val studentUtil: StudentUtil,
-    private val dateUtil: DateUtil
+    private val dateUtil: DateUtil,
+    private val snapshotEntityRepository: SnapshotEntityRepository
 ): TeacherQuestionsInterface {
 
     @Transactional
@@ -133,5 +133,24 @@ class TeacherQuestionServiceImpl(
             .failedStudents(failedStudents.body!!.totalCounts!!)
             .absentStudents(absentStudents.body!!.totalCounts!!)
             .build())
+    }
+
+    override fun getStudentSnapshot(questionId: String, studentId: String): ResponseEntity<SnapshotDAO> {
+        val snapshots = snapshotEntityRepository.findSnapshotEntitiesByQuestionIdAndStudentId(questionId, studentId)
+
+        val shots = ArrayList<SnapshotDetails>()
+        for (snapshot in snapshots) {
+            val snap = SnapshotDetails(
+                dateCreated = snapshot.dateCreated,
+                snapshot = snapshot.screenshot
+            )
+            shots.add(snap)
+        }
+
+        return ResponseEntity.ok(SnapshotDAO(
+            200,
+            "success",
+            shots
+        ))
     }
 }
