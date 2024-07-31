@@ -143,11 +143,11 @@ class QuestionServiceImpl(
         if (answerHistory.isEmpty()) throw MyExceptions(Reasons.NO_ANSWERS_AVAILABLE)
 
         return ResponseEntity.ok(
-            AnswerHistoryDAO.Builder()
-                .status(200)
-                .message("success")
-                .answers(answerHistory)
-                .build()
+            AnswerHistoryDAO(
+                200,
+                "success",
+                answerHistory
+            )
         )
     }
 
