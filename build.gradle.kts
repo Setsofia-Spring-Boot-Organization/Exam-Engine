@@ -68,6 +68,14 @@ dependencies {
 	// Ktor HTTP client dependencies
 	implementation("io.ktor:ktor-client-core:2.3.1")
 	implementation("io.ktor:ktor-client-cio:2.3.1")
+
+	// https://mvnrepository.com/artifact/org.thymeleaf/thymeleaf
+	implementation("org.thymeleaf:thymeleaf:3.1.2.RELEASE")
+	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+
+	// https://mvnrepository.com/artifact/org.springframework/spring-messaging
+	implementation("org.springframework:spring-messaging:6.1.11")
+
 }
 
 kotlin {
