@@ -3,6 +3,7 @@ package com.examengine.exam_engine.interfaces
 import com.examengine.exam_engine.dao.AllQuestionsDAO
 import com.examengine.exam_engine.dao.OverviewDAO
 import com.examengine.exam_engine.dao.QuestionsDAO
+import com.examengine.exam_engine.dao.SnapshotDAO
 import com.examengine.exam_engine.dto.QuestionDetailsDTO
 import org.springframework.http.ResponseEntity
 
@@ -71,4 +72,13 @@ interface TeacherQuestionsInterface {
      * @return a ResponseEntity containing the QuestionsDAO object with the status, message, and total count of missed users
      */
     fun getAllTotalCountOfAbsentStudents(questionId: String, teacherId: String): ResponseEntity<QuestionsDAO>
+
+    /**
+     * This method retrieves the snapshot of a student's response to a specific question.
+     *
+     * @param questionId the ID of the question for which the snapshot is being retrieved
+     * @param studentId the ID of the student whose snapshot is being retrieved
+     * @return a ResponseEntity containing the snapshot data in a SnapshotDAO object
+     */
+    fun getStudentSnapshot(questionId: String, studentId: String): ResponseEntity<SnapshotDAO>
 }
