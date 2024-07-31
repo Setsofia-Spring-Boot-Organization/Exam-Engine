@@ -1,6 +1,7 @@
 package com.examengine.exam_engine.services
 
 import com.examengine.exam_engine.dao.AllQuestionsDAO
+import com.examengine.exam_engine.dao.ExamNotificationDetails
 import com.examengine.exam_engine.dao.OverviewDAO
 import com.examengine.exam_engine.dao.QuestionsDAO
 import com.examengine.exam_engine.dto.QuestionDetailsDTO
@@ -9,26 +10,54 @@ import com.examengine.exam_engine.enums.Reasons
 import com.examengine.exam_engine.exceptions.MyExceptions
 import com.examengine.exam_engine.interfaces.TeacherQuestionsInterface
 import com.examengine.exam_engine.repositories.QuestionsRepository
-import com.examengine.exam_engine.utilities.QuestionUtil
-import com.examengine.exam_engine.utilities.TeacherQuestionUtil
-import com.examengine.exam_engine.utilities.TeacherUtil
+import com.examengine.exam_engine.utilities.*
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class TeacherQuestionServiceImpl(
     private var teacherUtil: TeacherUtil,
     private var questionUtil: QuestionUtil,
     private var questionsRepository: QuestionsRepository,
-    private val teacherQuestionUtil: TeacherQuestionUtil
+    private val teacherQuestionUtil: TeacherQuestionUtil,
+    private val emailService: EmailService,
+    private val studentUtil: StudentUtil,
+    private val dateUtil: DateUtil
 ): TeacherQuestionsInterface {
 
+    @Transactional
     override fun createNewQuestions(teacherId: String, questionsDTO: QuestionDetailsDTO): ResponseEntity<QuestionsDAO> {
         val user = teacherUtil.getTeacher(teacherId)
         val newQuestion = user.id?.let { questionUtil.createQuestion(it, questionsDTO) }
 
         try {
             val createdQuestion = questionsRepository.save(newQuestion!!)
+
+            val studentNames = studentUtil.getStudentNames(createdQuestion)
+
+            println(studentNames)
+
+            /**
+             * This instance of ExamNotificationDetails contains details about the exam notification,
+             * including the list of student names, the name of the user who created the question,
+             * the question title, the date the question was created, the time range for the question,
+             * the question instructions, and the receivers of the question.
+             */
+            val examNotificationDetails = ExamNotificationDetails(
+                studentNames,
+                user.name,
+                "Course Name",
+                createdQuestion.questionTitle,
+                dateUtil.formatDateTime(createdQuestion.dateCreated),
+                "${dateUtil.formatDateTime(createdQuestion.questionStartTime)} - ${dateUtil.formatDateTime(createdQuestion.questionEndTime)}",
+                createdQuestion.questionInstruction,
+                createdQuestion.receivers
+            )
+
+            // send the notification
+            emailService.sendExamNotification(examNotificationDetails)
+
             return ResponseEntity.status(200).body(questionUtil.newCreatedQuestionResponse(createdQuestion))
         } catch (exception: Exception) {
             throw MyExceptions(Reasons.ERROR_CREATING_QUESTION)
