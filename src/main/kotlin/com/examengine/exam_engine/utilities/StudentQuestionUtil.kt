@@ -17,7 +17,7 @@ class StudentQuestionUtil(
 ) {
     fun iteratedStudentQuestions(question: QuestionsEntity, studentId: String): QuestionsDAO {
         val answeredQuestionsEntity: Optional<AnsweredQuestionsEntity> = answeredQuestionsRepository.findByQuestionIdAndUserId(question.questionId!!, studentId)
-        if (answeredQuestionsEntity.isPresent) {
+        if (answeredQuestionsEntity.isPresent || question.questionEndTime < LocalDateTime.now()) {
             return QuestionsDAO.Builder()
                 .questionId(question.questionId!!)
                 .questionStatus(QuestionStatus.DONE)
@@ -66,12 +66,6 @@ class StudentQuestionUtil(
         val questions = ArrayList<QuestionsDAO>()
         for (question in questionsDAO) {
 
-            val questionStatus =  if (question.questionEndTime!! < LocalDateTime.now()) {
-                QuestionStatus.DONE
-            } else {
-                QuestionStatus.ACTIVE
-            }
-
             questions.add(
                 QuestionsDAO
                     .Builder()
@@ -79,7 +73,7 @@ class StudentQuestionUtil(
                     .dateCreated(question.dateCreated!!)
                     .questionTitle(question.questionTitle)
                     .questionInstructions(question.questionInstructions)
-                    .questionStatus(questionStatus)
+                    .questionStatus(question.questionStatus!!)
                     .questionStartTime(question.questionStartTime!!)
                     .questionEndTime(question.questionEndTime!!)
                     .studentQuestions(question.studentQuestions!!)
@@ -87,8 +81,6 @@ class StudentQuestionUtil(
                     .build()
             )
         }
-
-        println(questions)
 
         return AllQuestionsDAO(
             status = 200,
