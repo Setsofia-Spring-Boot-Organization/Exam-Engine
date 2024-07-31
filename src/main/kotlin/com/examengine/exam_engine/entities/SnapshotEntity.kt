@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
 
 @Document
-data class ScreenshotEntity(
+data class SnapshotEntity(
     @Id
     var screenshotId: String? = null,
 

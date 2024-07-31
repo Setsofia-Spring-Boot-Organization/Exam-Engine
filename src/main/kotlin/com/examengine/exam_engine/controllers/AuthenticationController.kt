@@ -118,6 +118,14 @@ class AuthenticationController(
         return teacherQuestionServiceImpl.getQuestionOverview(questionId, teacherId)
     }
 
+    @GetMapping("/teacher/questions/{studentId}/snapshots/{questionId}")
+    fun getStudentSnapshot(
+        @PathVariable questionId: String,
+        @PathVariable studentId: String
+    ) : ResponseEntity<SnapshotDAO>{
+        return teacherQuestionServiceImpl.getStudentSnapshot(questionId, studentId)
+    }
+
     @PostMapping("/save/image") // testing
     suspend fun saveImageToDatabase(
         @RequestParam("imageFile") imageFile: List<MultipartFile>,
